@@ -18,7 +18,7 @@
     TODO: Add support for big endian.
 -}
 
-import hash -- Hasher trait
+import Hasher -- Hasher trait
 
 embed
     #include <stdint.h>

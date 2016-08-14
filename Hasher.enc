@@ -1,0 +1,10 @@
+{-
+    Currently this trait doesn't do anything.
+    It will be used in the future when functions can be required,
+    and not just fields.
+-}
+trait Hasher
+    {-
+        TODO: Require the implementation of this function.
+    -}
+    --require hash(id : int) : int;
