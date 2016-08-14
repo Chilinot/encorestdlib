@@ -1,0 +1,51 @@
+passive class LinkedNode
+
+    value : int
+    next  : Maybe LinkedNode
+
+    def init(value : int, next : Maybe LinkedNode) : void {
+        this.value = value;
+        this.next = next;
+    }
+
+trait LinkedPop
+    require top : Maybe LinkedNode
+    def pop() : Maybe int {
+        match this.top with
+            Just node => let value = node.value in {
+                this.top = node.next;
+                Just value
+            }
+            Nothing => Nothing : Maybe int
+    }
+
+trait LinkedPush
+    require top : Maybe LinkedNode
+    def push(value : int) : void {
+          this.top = Just new LinkedNode(value, this.top);
+    }
+
+trait LinkedIterator
+    require top : Maybe LinkedNode
+
+    def print_all() : void {
+        match this.top with
+            Just top_node => let cursor = Just top_node in {
+                while cursor != Nothing {
+                    -- This ugly match extracts the content of the cursor monad
+                    match cursor with
+                        Just node => {
+                            print(node.value);
+                            cursor = node.next;
+                        }
+                }
+            }
+            Nothing => print("The list is empty!")
+    }
+
+passive class LinkedList : LinkedPop + LinkedPush + LinkedIterator
+    top : Maybe LinkedNode
+
+    def init() : void {
+        this.top = Nothing : Maybe LinkedNode;
+    }
