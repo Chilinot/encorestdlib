@@ -8,3 +8,22 @@ trait Hasher
         TODO: Require the implementation of this function.
     -}
     --require hash(id : int) : int;
+
+    {-
+        Casts 'value' and 'mod' to unsigned integers,
+        then performs "value % mod" and returns
+        the remainder cast to signed integer.
+
+        TODO: Do not return a signed integer!
+              It should only return unsigned!
+              OVERFLOW WARNING!
+    -}
+    def modulo(value : int, mod : int) : int {
+        embed int
+            uint64_t value = (uint64_t) #{value};
+            uint64_t mod   = (uint64_t) #{mod};
+
+            // Calculate modulo and return value as signed
+            (int64_t) (value % mod);
+        end
+    }

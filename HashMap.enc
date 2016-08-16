@@ -1,11 +1,32 @@
 import Linked_List
 import Siphash
 import Hasher
+import Id
+
+passive class Foo : Id
+    id : int
+
+    def init() : void {
+        this.id = this.generate_id();
+    }
 
 passive class HashMap
-    hasher : Hasher
-    map    : [LinkedList]
+    {-
+        WARNING: Prone to overflow!
+
+        The 'size' integer can overflow!
+
+        It should be swapped for a non-signed
+        integer whenever possible!
+
+        Hasher.modulo() treats inputs as unsigned
+        and returns signed, this can cause it to
+        return a negative number. But only if this
+        integer is too large!!
+    -}
     size   : int
+    hasher : Siphash
+    map    : [LinkedList]
 
     def init() : void {
         this.hasher = new Siphash;
@@ -20,17 +41,23 @@ passive class HashMap
         }
     }
 
-    def set(key : int, value : int) : void {
+    def set(key : Id, value : int) : void {
         let
-            list = this.map[key]
+            hash = this.hasher.hash(key.get_id())
+            k    = this.hasher.modulo(hash, this.size)
+            list = this.map[k]
         in {
+            print("Key id: {}\n", key.get_id());
+            print("Pushing key value: <{},{}>\n", k, value);
             list.push(value);
         }
     }
 
-    def print_values(key : int) : void {
+    def print_values(key : Id) : void {
         let
-            list = this.map[key]
+            hash = this.hasher.hash(key.get_id())
+            k    = this.hasher.modulo(hash, this.size)
+            list = this.map[k]
         in {
             list.print_all();
         }
@@ -39,22 +66,14 @@ passive class HashMap
 class Main
     def main() : void {
         let
-            list = new LinkedList
             map  = new HashMap
+            foobar = new Foo()
+            barfoo = new Foo()
         in {
-            list.push(12);
-            list.push(24);
-            list.print_all();
-            print(list.pop()); -- Just 24
-            print(list.pop()); -- Just 12
-            print(list.pop()); -- Nothing
-            print(list.pop()); -- Nothing
-            list.print_all();
+            map.set(foobar, 23);
+            map.print_values(foobar);
 
-            map.set(12, 23);
-            map.print_values(12);
-
-            map.set(256, 1337);
-            map.print_values(256);
+            map.set(barfoo, 1337);
+            map.print_values(barfoo);
         }
     }
