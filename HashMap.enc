@@ -10,57 +10,95 @@ passive class Foo : Id
         this.id = this.generate_id();
     }
 
+{-
+    Wrapper around key-value pairs for maps.
+-}
+passive class MapValue
+    key : Id
+    value : int
+
+    def init(key : Id, value : int) : void {
+        this.key = key;
+        this.value = value;
+    }
+
+    def print_pair() : void {
+        print("<{},{}>\n", this.key.get_id(), this.value);
+    }
+
 passive class HashMap
     {-
         WARNING: Prone to overflow!
 
-        The 'size' integer can overflow!
+        The 'size' and 'items' integers can overflow!
 
-        It should be swapped for a non-signed
-        integer whenever possible!
+        They should be swapped for non-signed
+        integers whenever possible!
 
         Hasher.modulo() treats inputs as unsigned
         and returns signed, this can cause it to
-        return a negative number. But only if this
+        return a negative number. But only if 'size'
         integer is too large!!
     -}
     size   : int
+    items  : int
     hasher : Siphash
-    map    : [LinkedList]
+    map    : [MapValue]
 
     def init() : void {
         this.hasher = new Siphash;
+        this.items = 0;
 
         -- The initial map can hold 256 unique keys.
         this.size = 256;
-        this.map = new [LinkedList](this.size);
-
-        -- Initialize the linked lists.
-        for i in [0..this.size - 1] {
-            this.map[i] = new LinkedList;
-        }
+        this.map = new [MapValue](this.size);
     }
 
     def set(key : Id, value : int) : void {
         let
             hash = this.hasher.hash(key.get_id())
             k    = this.hasher.modulo(hash, this.size)
-            list = this.map[k]
         in {
-            print("Key id: {}\n", key.get_id());
+            -- Debug
+            print("Set - Key id: {}\n", key.get_id());
             print("Pushing key value: <{},{}>\n", k, value);
-            list.push(value);
+
+            if(this.map[k] == null) then {
+                this.items = this.items + 1;
+            };
+            this.map[k] = new MapValue(key, value);
         }
     }
 
-    def print_values(key : Id) : void {
+    def print_value_at(key : Id) : void {
         let
             hash = this.hasher.hash(key.get_id())
             k    = this.hasher.modulo(hash, this.size)
-            list = this.map[k]
+            pair = this.map[k]
         in {
-            list.print_all();
+            -- Debug
+            print("Fetch - Key id: {}\n", key.get_id());
+
+            if(pair != null) then {
+                pair.print_pair();
+            };
         }
+    }
+
+    {-
+        Returns the amount of key-value pairs
+        currently stored in the map.
+    -}
+    def get_pair_amount() : int {
+        this.items
+    }
+
+    {-
+        Returns the amount of unique keys the map
+        is currently able to store.
+    -}
+    def get_size() : int {
+        this.size
     }
 
 class Main
@@ -71,9 +109,16 @@ class Main
             barfoo = new Foo()
         in {
             map.set(foobar, 23);
-            map.print_values(foobar);
+            map.print_value_at(foobar);
 
             map.set(barfoo, 1337);
-            map.print_values(barfoo);
+            map.print_value_at(barfoo);
+
+            print("Items: {}\n", map.get_pair_amount());
+
+            map.set(barfoo, 247);
+            map.print_value_at(barfoo);
+
+            print("Items: {}\n", map.get_pair_amount());
         }
     }
