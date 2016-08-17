@@ -13,20 +13,16 @@ passive class Foo : Id
 {-
     Wrapper around key-value pairs for maps.
 -}
-passive class MapValue
+passive class MapValue<v>
     key : Id
-    value : int
+    value : v
 
-    def init(key : Id, value : int) : void {
+    def init(key : Id, value : v) : void {
         this.key = key;
         this.value = value;
     }
 
-    def print_pair() : void {
-        print("<{},{}>\n", this.key.get_id(), this.value);
-    }
-
-passive class HashMap
+passive class HashMap<v>
     {-
         WARNING: Prone to overflow!
 
@@ -43,7 +39,7 @@ passive class HashMap
     size   : int
     items  : int
     hasher : Siphash
-    map    : [MapValue]
+    map    : [MapValue<v>]
 
     def init() : void {
         this.hasher = new Siphash;
@@ -51,37 +47,31 @@ passive class HashMap
 
         -- The initial map can hold 256 unique keys.
         this.size = 256;
-        this.map = new [MapValue](this.size);
+        this.map = new [MapValue<v>](this.size);
     }
 
-    def set(key : Id, value : int) : void {
+    def set(key : Id, value : v) : void {
         let
             hash = this.hasher.hash(key.get_id())
             k    = this.hasher.modulo(hash, this.size)
         in {
-            -- Debug
-            print("Set - Key id: {}\n", key.get_id());
-            print("Pushing key value: <{},{}>\n", k, value);
-
             if(this.map[k] == null) then {
                 this.items = this.items + 1;
             };
-            this.map[k] = new MapValue(key, value);
+            this.map[k] = new MapValue<v>(key, value);
         }
     }
 
-    def print_value_at(key : Id) : void {
+    def get_value(key : Id) : Maybe v {
         let
             hash = this.hasher.hash(key.get_id())
             k    = this.hasher.modulo(hash, this.size)
             pair = this.map[k]
         in {
-            -- Debug
-            print("Fetch - Key id: {}\n", key.get_id());
-
-            if(pair != null) then {
-                pair.print_pair();
-            };
+            if pair != null then
+                Just pair.value
+            else
+                Nothing
         }
     }
 
@@ -104,20 +94,20 @@ passive class HashMap
 class Main
     def main() : void {
         let
-            map  = new HashMap
+            map  = new HashMap<int>
             foobar = new Foo()
             barfoo = new Foo()
         in {
             map.set(foobar, 23);
-            map.print_value_at(foobar);
+            print(map.get_value(foobar));
 
             map.set(barfoo, 1337);
-            map.print_value_at(barfoo);
+            print(map.get_value(barfoo));
 
             print("Items: {}\n", map.get_pair_amount());
 
             map.set(barfoo, 247);
-            map.print_value_at(barfoo);
+            print(map.get_value(barfoo));
 
             print("Items: {}\n", map.get_pair_amount());
         }
