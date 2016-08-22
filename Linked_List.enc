@@ -1,51 +1,104 @@
-passive class LinkedNode
+passive class LinkedNode<t>
+    value : t
+    prev  : Maybe LinkedNode<t>
+    next  : Maybe LinkedNode<t>
 
-    value : int
-    next  : Maybe LinkedNode
-
-    def init(value : int, next : Maybe LinkedNode) : void {
+    def init(value : t,
+            prev : Maybe LinkedNode<t>,
+            next : Maybe LinkedNode<t>) : void
+    {
         this.value = value;
+        this.prev = prev;
         this.next = next;
     }
 
-trait LinkedPop
-    require top : Maybe LinkedNode
-    def pop() : Maybe int {
+trait LinkedPop<t>
+    require top : Maybe LinkedNode<t>
+    def pop() : Maybe t {
         match this.top with
             Just node => let value = node.value in {
                 this.top = node.next;
                 Just value
             }
-            Nothing => Nothing : Maybe int
+            Nothing => Nothing : Maybe t
     }
 
-trait LinkedPush
-    require top : Maybe LinkedNode
-    def push(value : int) : void {
-          this.top = Just new LinkedNode(value, this.top);
+trait LinkedPush<t>
+    require top : Maybe LinkedNode<t>
+    def push(value : t) : void {
+        let
+            new_node = Just new LinkedNode<t>(value, Nothing, this.top)
+        in {
+            if this.top != Nothing then {
+                match this.top with
+                    Just node => node.prev = new_node;
+            };
+            this.top = new_node;
+        }
     }
 
-trait LinkedIterator
-    require top : Maybe LinkedNode
+trait LinkedDrop<t>
+    require top : Maybe LinkedNode<t>
+    def drop(node : LinkedNode<t>) : void {
+        let
+            prev = node.prev : Maybe LinkedNode<t>
+            next = node.next : Maybe LinkedNode<t>
+        in {
+            -- Repointing the next and prev nodes
+            -- to eachother. Removing the given
+            -- node from the chain.
+            if prev != Nothing then
+                match prev with
+                    Just n => n.next = next;
 
-    def print_all() : void {
-        match this.top with
-            Just top_node => let cursor = Just top_node in {
-                while cursor != Nothing {
-                    -- This ugly match extracts the content of the cursor monad
-                    match cursor with
-                        Just node => {
-                            print(node.value);
-                            cursor = node.next;
-                        }
-                }
-            }
-            Nothing => print("The list is empty!")
+            if next != Nothing then
+                match next with
+                    Just n => n.prev = prev;
+
+            -- Repoint top if the node
+            -- to remove is the top-node.
+            if this.top != Nothing then
+                match this.top with
+                    Just n => if n == node then this.top = next;
+        }
     }
 
-passive class LinkedList : LinkedPop + LinkedPush + LinkedIterator
-    top : Maybe LinkedNode
+passive class LinkedList<t> : LinkedPop<t> + LinkedPush<t> + LinkedDrop<t>
+    top : Maybe LinkedNode<t>
 
     def init() : void {
-        this.top = Nothing : Maybe LinkedNode;
+        this.top = Nothing : Maybe LinkedNode<t>;
+    }
+
+    def iterator() : LinkedIterator<t> {
+        new LinkedIterator<t>(this)
+    }
+
+passive class LinkedIterator<t>
+    list   : LinkedList<t>
+    cursor : Maybe LinkedNode<t>
+
+    def init(list : LinkedList<t>) : void {
+        this.list = list;
+        this.cursor = list.top;
+    }
+
+    def next() : Maybe LinkedNode<t> {
+        let
+            current = this.cursor
+        in {
+            if current == Nothing then {
+                Nothing
+            } else {
+                (match this.cursor with
+                    Just node => this.cursor = node.next);
+
+                -- Return
+                current
+            }
+        }
+    }
+
+    def has_next() : bool {
+        this.cursor != Nothing
     }
