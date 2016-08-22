@@ -3,17 +3,10 @@ import Siphash
 import Hasher
 import Id
 
-passive class Foo : Id
-    id : int
-
-    def init() : void {
-        this.id = this.generate_id();
-    }
-
 {-
     Wrapper around key-value pairs for maps.
 -}
-passive class MapValue<v>
+passive class Entry<v>
     key : Id
     value : v
 
@@ -39,26 +32,67 @@ passive class HashMap<v>
     size   : int
     items  : int
     hasher : Siphash
-    map    : [MapValue<v>]
+    map    : [LinkedList<Entry<v>>]
 
     def init() : void {
+        -- The initial map can hold 256 unique keys.
+        this.init_size(256);
+    }
+
+    def init_size(size : int) : void {
         this.hasher = new Siphash;
         this.items = 0;
+        this.size = size;
+        this.map = new [LinkedList<Entry<v>>](this.size);
 
-        -- The initial map can hold 256 unique keys.
-        this.size = 256;
-        this.map = new [MapValue<v>](this.size);
+        for i in [0..this.size-1] {
+            this.map[i] = new LinkedList<Entry<v>>();
+        }
+    }
+
+    def remove(key : Id) : bool {
+        let
+            hash    = this.hasher.hash(key.get_id())
+            k       = this.hasher.modulo(hash, this.size)
+            list    = this.map[k]
+            ret_val = false
+        in {
+            -- Iterate over the list and remove
+            -- any entry with a matching key.
+            let iter = list.iterator() in {
+                while iter.has_next() {
+                    let current = iter.next() in {
+                        -- Extract the contents of the
+                        -- LinkedNode<Entry<v>>
+                        match current with
+                            Just node =>
+                                let entry = node.value in {
+                                    if entry.key.equals(key) then {
+                                        -- Remove the item
+                                        list.drop(node);
+                                        this.items = this.items - 1;
+                                        ret_val = true;
+                                    };
+                                }
+                   }
+                }
+            };
+
+            -- Return
+            ret_val
+        }
     }
 
     def set(key : Id, value : v) : void {
         let
-            hash = this.hasher.hash(key.get_id())
-            k    = this.hasher.modulo(hash, this.size)
+            hash  = this.hasher.hash(key.get_id())
+            k     = this.hasher.modulo(hash, this.size)
+            list  = this.map[k]
+            entry = new Entry<v>(key, value)
         in {
-            if(this.map[k] == null) then {
-                this.items = this.items + 1;
-            };
-            this.map[k] = new MapValue<v>(key, value);
+            this.remove(key);
+            list.push(entry);
+            this.items = this.items + 1;
         }
     }
 
@@ -66,49 +100,77 @@ passive class HashMap<v>
         let
             hash = this.hasher.hash(key.get_id())
             k    = this.hasher.modulo(hash, this.size)
-            pair = this.map[k]
+            list = this.map[k]
         in {
-            if pair != null then
-                Just pair.value
-            else
-                Nothing
+            {-
+                Iterate over the list to locate the item.
+            -}
+            let
+                iter    = list.iterator()
+                current = Nothing : Maybe LinkedNode<Entry<v>>
+                tmp     = Nothing : Maybe v
+            in {
+                while iter.has_next() and tmp == Nothing {
+                    current = iter.next();
+                    match current with
+                        Just entry =>
+                            if entry.value.key.equals(key) then {
+                                tmp = Just entry.value.value;
+                            };
+                };
+
+                -- Return
+                tmp
+            }
         }
     }
 
-    {-
-        Returns the amount of key-value pairs
-        currently stored in the map.
-    -}
-    def get_pair_amount() : int {
-        this.items
-    }
 
-    {-
-        Returns the amount of unique keys the map
-        is currently able to store.
-    -}
-    def get_size() : int {
-        this.size
+{-
+    ----- TESTING/DEBUGGING -----
+-}
+
+passive class Foo : Id
+    id : int
+
+    def init() : void {
+        this.id = this.generate_id();
     }
 
 class Main
     def main() : void {
         let
-            map  = new HashMap<int>
+            map  = new HashMap<int>()
             foobar = new Foo()
             barfoo = new Foo()
         in {
+            -- Just 23
+            -- 1
             map.set(foobar, 23);
             print(map.get_value(foobar));
+            print(map.items);
 
+            -- Just 1337
+            -- 2
             map.set(barfoo, 1337);
             print(map.get_value(barfoo));
+            print(map.items);
 
-            print("Items: {}\n", map.get_pair_amount());
-
+            -- Just 247
+            -- 2
             map.set(barfoo, 247);
             print(map.get_value(barfoo));
+            print(map.items);
 
-            print("Items: {}\n", map.get_pair_amount());
+            -- Nothing
+            -- 1
+            map.remove(barfoo);
+            print(map.get_value(barfoo));
+            print(map.items);
+
+            -- Just 23
+            -- 1
+            print(map.get_value(foobar));
+            print(map.items);
         }
     }
