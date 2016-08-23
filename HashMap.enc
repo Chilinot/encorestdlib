@@ -15,6 +15,23 @@ passive class Entry<v>
         this.value = value;
     }
 
+passive class MapIterator<v>
+    current_index : int
+    current_node  : Maybe LinkedNode<Entry<v>>
+
+    def init() : void {
+        this.current_index = 0;
+        this.current_node = Nothing;
+    }
+
+    def has_next() : bool {
+        false
+    }
+
+    def next() : Maybe Entry<v> {
+        Nothing
+    }
+
 passive class HashMap<v>
     {-
         WARNING: Prone to overflow!
