@@ -12,19 +12,10 @@ passive class LinkedNode<t>
         this.next = next;
     }
 
-trait LinkedPop<t>
-    require top : Maybe LinkedNode<t>
-    def pop() : Maybe t {
-        match this.top with
-            Just node => let value = node.value in {
-                this.top = node.next;
-                Just value
-            }
-            Nothing => Nothing : Maybe t
-    }
-
 trait LinkedPush<t>
     require top : Maybe LinkedNode<t>
+    require length : int
+
     def push(value : t) : void {
         let
             new_node = Just new LinkedNode<t>(value, Nothing, this.top)
@@ -34,11 +25,14 @@ trait LinkedPush<t>
                     Just node => node.prev = new_node;
             };
             this.top = new_node;
+            this.length = this.length + 1;
         }
     }
 
 trait LinkedDrop<t>
     require top : Maybe LinkedNode<t>
+    require length : int
+
     def drop(node : LinkedNode<t>) : void {
         let
             prev = node.prev : Maybe LinkedNode<t>
@@ -47,27 +41,34 @@ trait LinkedDrop<t>
             -- Repointing the next and prev nodes
             -- to eachother. Removing the given
             -- node from the chain.
-            if prev != Nothing then
-                match prev with
-                    Just n => n.next = next;
+            (match prev with
+                Just n => n.next = next
+                Nothing => ());
 
-            if next != Nothing then
-                match next with
-                    Just n => n.prev = prev;
+            (match next with
+                Just n => n.prev = prev
+                Nothing => ());
 
             -- Repoint top if the node
             -- to remove is the top-node.
-            if this.top != Nothing then
-                match this.top with
-                    Just n => if n == node then this.top = next;
+            (match this.top with
+                Just n => if n == node then this.top = next
+                Nothing => ());
+
+            -- TODO: Check if the given
+            -- node actually belongs to the list
+            -- before decrementing this integer!!
+            this.length = this.length - 1;
         }
     }
 
-passive class LinkedList<t> : LinkedPop<t> + LinkedPush<t> + LinkedDrop<t>
+passive class LinkedList<t> : LinkedPush<t> + LinkedDrop<t>
     top : Maybe LinkedNode<t>
+    length : int
 
     def init() : void {
         this.top = Nothing : Maybe LinkedNode<t>;
+        this.length = 0;
     }
 
     def iterator() : LinkedIterator<t> {
