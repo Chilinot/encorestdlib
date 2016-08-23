@@ -48,7 +48,7 @@ passive class EUnit
         in {
             print("EUnit running {} test(s)...\n", this.counter);
 
-            (for i in [0..this.counter-1] {
+            (repeat i <- this.counter {
                 let
                     test  = this.test_cases[i] : TestCase
                     value = test.perform()     : bool
