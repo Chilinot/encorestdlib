@@ -116,9 +116,35 @@ passive class HashMap<v>
             list  = this.map[k]
             entry = new Entry<v>(key, value)
         in {
+            -- Increase the size of the map if it contains
+            -- about 75% of its capacity of keys.
+            if this.items >= (this.size * 0.75) then {
+                this.resize(this.size * 2);
+            };
+
             this.remove(key);
             list.push(entry);
             this.items = this.items + 1;
+        }
+    }
+
+    {-
+        Resize the map using the given
+        integer as the new size.
+
+        This will move all items in the entire
+        map. Possibly heavy operation!!
+    -}
+    def resize(new_size : int) : void {
+        let
+            new_map = new [LinkedList<Entry<v>>](new_size)
+        in {
+            -- Initialize all lists.
+            (for i in [0..new_size-1] {
+                new_map[i] = new LinkedList<Entry<v>>();
+            });
+
+
         }
     }
 
