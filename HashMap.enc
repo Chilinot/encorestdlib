@@ -51,22 +51,27 @@ passive class HashMap<v>
     hasher : Siphash
     map    : [LinkedList<Entry<v>>]
 
+    {-
+        Initializer.
+    -}
     def init() : void {
-        -- The initial map can hold 256 unique keys.
-        this.init_size(256);
-    }
-
-    def init_size(size : int) : void {
         this.hasher = new Siphash;
         this.items = 0;
-        this.size = size;
+
+        -- The initial map can hold this many unique keys.
+        this.size = 20;
         this.map = new [LinkedList<Entry<v>>](this.size);
 
+        -- Initialize all lists.
         for i in [0..this.size-1] {
             this.map[i] = new LinkedList<Entry<v>>();
         }
     }
 
+    {-
+        Removes any entry that has a
+        matching key from the map.
+    -}
     def remove(key : Id) : bool {
         let
             hash    = this.hasher.hash(key.get_id())
@@ -100,6 +105,10 @@ passive class HashMap<v>
         }
     }
 
+    {-
+        Sets the value for the given
+        key in the map.
+    -}
     def set(key : Id, value : v) : void {
         let
             hash  = this.hasher.hash(key.get_id())
@@ -113,6 +122,10 @@ passive class HashMap<v>
         }
     }
 
+    {-
+        Retrieves the value stored under
+        the given key in the map.
+    -}
     def get_value(key : Id) : Maybe v {
         let
             hash = this.hasher.hash(key.get_id())
