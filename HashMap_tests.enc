@@ -1,0 +1,215 @@
+import HashMap
+import Id
+import EUnit
+
+passive class Foo : Id {
+    id : int
+
+    def init() : void {
+        this.id = this.generate_id();
+    }
+}
+
+def set_and_get() : bool {
+    let
+        map = new HashMap<int>
+        foo = new Foo()
+    in {
+        map.set(foo, 12);
+        match map.get_value(foo) with
+            Just 12 => true
+            _       => false
+    }
+}
+def items_and_size_1() : bool {
+    let
+        map = new HashMap<int>
+        foo = new Foo()
+        bar = new Foo()
+    in {
+        map.set(foo, 12);
+        map.set(bar, 12);
+
+        map.items == 2 and map.size == 20
+    }
+}
+def items_and_size_2() : bool {
+    let
+        map = new HashMap<int>
+        foo = new Foo()
+        bar = new Foo()
+    in {
+        map.set(foo, 12);
+        map.set(bar, 12);
+        map.set(foo, 23);
+
+        map.items == 2 and map.size == 20
+    }
+}
+def remove_1() : bool {
+    let
+        map = new HashMap<int>
+        foo = new Foo()
+        ret = true
+    in {
+        map.set(foo, 12);
+
+        map.remove(foo);
+        (match map.get_value(foo) with
+            Nothing => ret = ret and true
+            _       => ret = false);
+
+        ret
+    }
+}
+def remove_2() : bool {
+    let
+        map = new HashMap<int>
+        foo = new Foo()
+        bar = new Foo()
+        ret = true
+    in {
+        map.set(foo, 12);
+        map.set(bar, 42);
+
+        map.remove(foo);
+
+        (match map.get_value(foo) with
+            Nothing => ret = ret and true
+            _       => ret = false);
+        (match map.get_value(bar) with
+            Just 42 => ret = ret and true
+            _       => ret = false);
+        (match map.items with
+            1 => ret = ret and true
+            _ => ret = false);
+        (match map.size with
+            20 => ret = ret and true
+            _  => ret = false);
+
+        ret
+    }
+}
+def dual_remove() : bool {
+    let
+        map = new HashMap<int>
+        foo = new Foo()
+        ret = true
+    in {
+        -- This is tested in remove_1 & remove_2.
+        map.set(foo, 12);
+        map.remove(foo);
+
+        -- foo has already been removed so this
+        -- should return false:
+        map.remove(foo)
+    }
+}
+def items_1() : int {
+    let
+        map = new HashMap<int>
+        foo = new Foo()
+    in {
+        map.set(foo,12);
+        map.items
+    }
+}
+def items_2() : int {
+    let
+        map = new HashMap<int>
+        foo = new Foo()
+        bar = new Foo()
+    in {
+        map.set(foo, 12);
+        map.set(bar, 42);
+        map.items
+    }
+}
+def items_3() : int {
+    let
+        map = new HashMap<int>
+        foo = new Foo()
+        bar = new Foo()
+    in {
+        map.set(foo, 12);
+        map.set(bar, 42);
+        map.set(bar, 1337);
+        map.items
+    }
+}
+def items_4() : int {
+    let
+        map = new HashMap<int>
+        f1  = new Foo()
+        f2  = new Foo()
+        f3  = new Foo()
+        f4  = new Foo()
+        f5  = new Foo()
+        f6  = new Foo()
+        f7  = new Foo()
+        f8  = new Foo()
+        f9  = new Foo()
+    in {
+        map.set(f1,1);
+        map.set(f2,2);
+        map.set(f3,3);
+        map.set(f4,4);
+        map.set(f5,5);
+        map.set(f6,6);
+        map.set(f7,7);
+        map.set(f8,8);
+        map.set(f9,9);
+
+        map.items
+    }
+}
+def size_1() : int {
+    let
+        map = new HashMap<int>
+        f1  = new Foo()
+        f2  = new Foo()
+        f3  = new Foo()
+        f4  = new Foo()
+        f5  = new Foo()
+        f6  = new Foo()
+        f7  = new Foo()
+        f8  = new Foo()
+        f9  = new Foo()
+    in {
+        map.set(f1,1);
+        map.set(f2,2);
+        map.set(f3,3);
+        map.set(f4,4);
+        map.set(f5,5);
+        map.set(f6,6);
+        map.set(f7,7);
+        map.set(f8,8);
+        map.set(f9,9);
+
+        map.size
+    }
+}
+
+class Main
+    def main() : void {
+        let
+            tests = new EUnit(100)
+        in {
+            tests.assert_true("Testing set and get", set_and_get);
+            tests.assert_true("Testing items and size #1", items_and_size_1);
+            tests.assert_true("Testing items and size #2", items_and_size_2);
+            tests.assert_true("Testing remove #1", remove_1);
+            tests.assert_true("Testing remove #2", remove_2);
+
+            tests.assert_false("Testing dual remove", dual_remove);
+
+            tests.assert_int("Testing items #1", items_1, 1);
+            tests.assert_int("Testing items #2", items_2, 2);
+            tests.assert_int("Testing items #3", items_3, 2);
+            tests.assert_int("Testing items #4", items_4, 9);
+
+            tests.assert_int("Testing size #1", size_1, 20);
+
+            tests.run();
+        }
+    }
