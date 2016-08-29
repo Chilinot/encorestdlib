@@ -157,17 +157,48 @@ def push_three_and_remove_middle() : bool {
         success
     }
 }
+def length_1() : bool {
+    let
+        list = new LinkedList<int>
+    in {
+        list.push(13);
+        list.push(12);
+        list.push(11);
+        list.push(10);
+
+        list.length == 4
+    }
+}
+def length_2() : bool {
+    let
+        list = new LinkedList<int>
+    in {
+        list.push(13);
+        list.push(12);
+        list.push(11);
+        list.push(10);
+
+        (match list.top with
+            Just n => list.drop(n));
+        (match list.top with
+            Just n => list.drop(n));
+
+        list.length == 2
+    }
+}
 
 class Main
     def main() : void {
         let
-            tests = new EUnit(100)
+            tests = new TestSuite("LinkedList", 100)
         in {
-            tests.assert_true("Test init", create);
-            tests.assert_true("Test push one int", push_one);
-            tests.assert_true("Test push two ints", push_two);
-            tests.assert_true("Test push three ints", push_three);
-            tests.assert_true("Test push three ints and remove middle", push_three_and_remove_middle);
+            tests.assert_true("init", create);
+            tests.assert_true("push one int", push_one);
+            tests.assert_true("push two ints", push_two);
+            tests.assert_true("push three ints", push_three);
+            tests.assert_true("push three ints and remove middle", push_three_and_remove_middle);
+            tests.assert_true("length #1", length_1);
+            tests.assert_true("length #2", length_2);
 
             tests.run();
         }
