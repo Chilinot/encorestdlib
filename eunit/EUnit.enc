@@ -1,68 +1,89 @@
-passive class TestCase
-    name : String
-    fun : () -> bool
-    expected : bool
+bundle EUnit where
 
-    def init(n : String, f : () -> bool, e : bool) : void {
-        this.name = n;
-        this.fun = f;
-        this.expected = e;
+    --def test_optional<a>(message : String, option : Maybe a, expected : a) : bool {
+    --    match option with
+    --        Just value when value == expected => true
+    --        Just value => {
+    --            print("Test {} failed! Expected \"Just {}\" got \"Just {}\".\n", message, expected, value);
+    --            false
+    --        }
+    --        Nothing => {
+    --            print("Test {} failed! Expected \"Just {}\" got \"Nothing\".\n", message, expected);
+    --            false
+    --        }
+    --}
+
+    passive class TestCase {
+        name : String
+        fun : () -> bool
+        expected : bool
+
+        def init(n : String, f : () -> bool, e : bool) : void {
+            this.name = n;
+            this.fun = f;
+            this.expected = e;
+        }
+
+        def perform() : bool {
+            let f = this.fun in {
+                print("Running test \"{}\":\n", this.name);
+                f()
+            }
+        }
     }
 
-    def perform() : bool {
-        let f = this.fun in
-            f()
-    }
+    passive class TestSuite {
+        suite_name : String
+        test_cases : [TestCase]
+        counter    : int
 
-passive class EUnit
-    test_cases : [TestCase]
-    counter    : int
+        def init(name : String, test_amount : int) : void {
+            this.test_cases = new [TestCase](test_amount);
+            this.suite_name = name;
+            this.counter = 0;
+        }
 
-    def init(test_amount : int) : void {
-        this.test_cases = new [TestCase](test_amount);
-        this.counter = 0;
-    }
+        def assert_bool(name : String, function : () -> bool, expected : bool) : void {
+            this.test_cases[this.counter] = new TestCase(name,function,expected);
+            this.counter = this.counter + 1;
+        }
 
-    def assert_bool(name : String, function : () -> bool, expected : bool) : void {
-        this.test_cases[this.counter] = new TestCase(name,function,expected);
-        this.counter = this.counter + 1;
-    }
+        def assert_true(name : String, function : () -> bool) : void {
+            this.assert_bool(name, function, true);
+        }
 
-    def assert_true(name : String, function : () -> bool) : void {
-        this.assert_bool(name, function, true);
-    }
+        def assert_false(name : String, function : () -> bool) : void {
+            this.assert_bool(name, function, false);
+        }
 
-    def assert_false(name : String, function : () -> bool) : void {
-        this.assert_bool(name, function, false);
-    }
-
-    def assert_int(name : String, function : () -> int, expected : int) : void {
-        this.assert_true(name, \() -> {
-            function() == expected
-        });
-    }
-
-    def run() : void {
-        let
-            finished = 0
-        in {
-            print("EUnit running {} test(s)...\n", this.counter);
-
-            (repeat i <- this.counter {
-                let
-                    test  = this.test_cases[i] : TestCase
-                    value = test.perform()     : bool
-                in {
-                    if value != test.expected then {
-                        print("\n{} failed!\n", test.name);
-                        print("\tExpected {} got {}\n", test.expected, value);
-                    } else {
-                        finished = finished + 1;
-                    };
-                }
+        def assert_int(name : String, function : () -> int, expected : int) : void {
+            this.assert_true(name, \() -> {
+                function() == expected
             });
+        }
 
-            print("\nEUnit completed.");
-            print("{}/{} tests completed successfully!\n", finished, this.counter);
+        def run() : void {
+            let
+                finished = 0
+            in {
+                print("EUnit testsuite \"{}\" running {} test(s)...\n", this.suite_name, this.counter);
+
+                (repeat i <- this.counter {
+                    let
+                        test  = this.test_cases[i] : TestCase
+                        value = test.perform()     : bool
+                    in {
+                        if value != test.expected then {
+                            print("\tFailure!");
+                        } else {
+                            print("\tSuccess!");
+                            finished = finished + 1;
+                        };
+                    }
+                });
+
+                print("\nEUnit testsuite \"{}\" completed.\n", this.suite_name);
+                print("{}/{} tests completed successfully!\n", finished, this.counter);
+            }
         }
     }
