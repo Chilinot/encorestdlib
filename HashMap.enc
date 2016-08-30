@@ -110,7 +110,7 @@ passive class HashMap<v>
     -}
     size   : int
     items  : int
-    hasher : Siphash
+    hasher : Hasher
     map    : [LinkedList<Entry<v>>]
 
     {-
