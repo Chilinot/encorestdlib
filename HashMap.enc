@@ -37,17 +37,13 @@ passive class MapIterator<v>
         let
             retval = Nothing : Maybe LinkedNode<Entry<v>>
             get_next_top = \() -> {
-                let
-                    ret = Nothing : Maybe LinkedNode<Entry<v>>
-                in {
+                let ret = Nothing : Maybe LinkedNode<Entry<v>> in {
                     this.current_index = this.current_index + 1;
 
                     (while this.current_index < this.map.size and
                            ret == Nothing
                     {
-                        let
-                            list = this.map.map[this.current_index]
-                        in {
+                        let list = this.map.map[this.current_index] in {
                             if list.length > 0 then {
                                 ret = list.top;
                             } else {
@@ -77,9 +73,7 @@ passive class MapIterator<v>
     }
 
     def next() : Maybe Entry<v> {
-        let
-            current = this.current_node
-        in {
+        let current = this.current_node in {
             if this.has_next() then {
                 this.current_node = this.locate_next();
             };
@@ -203,18 +197,13 @@ passive class HashMap<v>
         map. Possibly heavy operation!!
     -}
     def resize(new_size : int) : void {
-        let
-            new_map = new [LinkedList<Entry<v>>](new_size)
-        in {
+        let new_map = new [LinkedList<Entry<v>>](new_size) in {
             -- Initialize all lists.
-            (for i in [0..new_size-1] {
+            (repeat i <- new_size {
                 new_map[i] = new LinkedList<Entry<v>>();
             });
 
-            let
-                iterator = new MapIterator<v>(this)
-                counter = 0 -- Used for debugging
-            in {
+            let iterator = new MapIterator<v>(this) in {
                 -- Move all items from the old array to the new.
                 while iterator.has_next() {
                     let current = iterator.next() in {
@@ -226,18 +215,10 @@ passive class HashMap<v>
                                     list = new_map[k]
                                 in {
                                     list.push(entry);
-
-                                    -- Debugging
-                                    counter = counter + 1
                                 }
                             }
                     }
                 };
-
-                -- Debug
-                if counter != this.items then {
-                    print("ERROR! Resize only moved {} entries out of {}!\n", counter, this.items);
-                }
             };
 
             this.map = new_map;
@@ -259,17 +240,17 @@ passive class HashMap<v>
                 Iterate over the list to locate the item.
             -}
             let
-                iter    = list.iterator()
-                current = Nothing : Maybe LinkedNode<Entry<v>>
-                tmp     = Nothing : Maybe v
+                iter = list.iterator()
+                tmp  = Nothing : Maybe v
             in {
                 while iter.has_next() and tmp == Nothing {
-                    current = iter.next();
-                    match current with
-                        Just entry =>
-                            if entry.value.key.equals(key) then {
-                                tmp = Just entry.value.value;
-                            };
+                    let current = iter.next() in {
+                        match current with
+                            Just entry =>
+                                if entry.value.key.equals(key) then {
+                                    tmp = Just entry.value.value;
+                                };
+                    }
                 };
 
                 -- Return
