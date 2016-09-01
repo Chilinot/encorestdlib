@@ -7,11 +7,13 @@ import Id
     Wrapper around key-value pairs for maps.
 -}
 passive class Entry<v>
-    key : Id
-    value : v
+    key      : Id
+    key_hash : int
+    value    : v
 
-    def init(key : Id, value : v) : void {
+    def init(key : Id, key_hash : int, value : v) : void {
         this.key = key;
+        this.key_hash = key_hash;
         this.value = value;
     }
 
@@ -168,7 +170,7 @@ passive class HashMap<v>
     def set(key : Id, value : v) : void {
         let
             hash  = this.hasher.hash(key.get_id())
-            entry = new Entry<v>(key, value)
+            entry = new Entry<v>(key, hash, value)
         in {
             -- Increase the size of the map if it contains
             -- about 75% of its capacity of keys.
@@ -210,7 +212,7 @@ passive class HashMap<v>
                         match current with
                             Just entry => {
                                 let
-                                    hash = this.hasher.hash(entry.key.get_id())
+                                    hash = entry.key_hash
                                     k    = this.hasher.modulo(hash, new_size)
                                     list = new_map[k]
                                 in {
