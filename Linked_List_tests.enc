@@ -1,5 +1,4 @@
 import Linked_List
-import EUnit
 
 def create() : bool {
     let
@@ -186,20 +185,3 @@ def length_2() : bool {
         list.length == 2
     }
 }
-
-class Main
-    def main() : void {
-        let
-            tests = new TestSuite("LinkedList", 100)
-        in {
-            tests.assert_true("init", create);
-            tests.assert_true("push one int", push_one);
-            tests.assert_true("push two ints", push_two);
-            tests.assert_true("push three ints", push_three);
-            tests.assert_true("push three ints and remove middle", push_three_and_remove_middle);
-            tests.assert_true("length #1", length_1);
-            tests.assert_true("length #2", length_2);
-
-            tests.run();
-        }
-    }

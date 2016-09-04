@@ -1,0 +1,45 @@
+import EUnit
+import HashMap_tests
+import Linked_List_tests
+
+class Main
+    def main() : void {
+        let
+            tests = new TestSuite("LinkedList", 100)
+        in {
+            tests.assert_true("init", create);
+            tests.assert_true("push one int", push_one);
+            tests.assert_true("push two ints", push_two);
+            tests.assert_true("push three ints", push_three);
+            tests.assert_true("push three ints and remove middle", push_three_and_remove_middle);
+            tests.assert_true("length #1", length_1);
+            tests.assert_true("length #2", length_2);
+
+            tests.run();
+        };
+        let
+            tests = new TestSuite("HashMap", 100)
+        in {
+            tests.assert_true("set and get", set_and_get);
+            tests.assert_true("items and size #1", items_and_size_1);
+            tests.assert_true("items and size #2", items_and_size_2);
+            tests.assert_true("remove #1", remove_1);
+            tests.assert_true("remove #2", remove_2);
+
+            tests.assert_false("dual remove", dual_remove);
+
+            tests.assert_int("items #1", items_1, 1);
+            tests.assert_int("items #2", items_2, 2);
+            tests.assert_int("items #3", items_3, 2);
+            tests.assert_int("items #4", items_4, 9);
+
+            tests.assert_int("size #1", size_1, 32);
+
+            tests.assert_true("iterator #1", iterator_test_1);
+            tests.assert_true("iterator #2", iterator_test_2);
+
+            tests.assert_true("resize #1", resize_1);
+
+            tests.run();
+        };
+    }

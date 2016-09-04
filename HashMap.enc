@@ -121,7 +121,7 @@ passive class HashMap<v>
         this.map = new [LinkedList<Entry<v>>](this.size);
 
         -- Initialize all lists.
-        for i in [0..this.size-1] {
+        repeat i <- this.size {
             this.map[i] = new LinkedList<Entry<v>>();
         }
     }
