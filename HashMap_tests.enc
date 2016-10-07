@@ -196,7 +196,7 @@ def iterator_test_1() : bool {
     in {
         map.set(foo, 12);
         let
-            iter = new MapIterator<int>(map)
+            iter = new HashMapIterator<int>(map)
         in {
             ret = (
                 (match iter.has_next() with
@@ -255,7 +255,7 @@ def iterator_test_2() : bool {
         map.set(foo, 12);
         map.set(bar, 43);
         let
-            iter = new MapIterator<int>(map)
+            iter = new HashMapIterator<int>(map)
         in {
             ret = (
                 (match iter.has_next() with

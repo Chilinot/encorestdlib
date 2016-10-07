@@ -3,8 +3,15 @@ import Siphash
 import Hasher
 import Id
 import Entry
+import Map
+import Iterator
 
-passive class MapIterator<v>
+passive class HashMapIterator<v> : Iterator<Entry<v>>
+    {-
+        TODO: Add clone of internal representation of hashmap.
+        This will stop aliasing problems as well as allowing this object
+        free access to the array.
+    -}
     map           : HashMap<v>
     current_index : uint
     current_node  : Maybe LinkedNode<Entry<v>>
@@ -25,12 +32,18 @@ passive class MapIterator<v>
     def locate_next() : Maybe LinkedNode<Entry<v>> {
         let
             retval = Nothing : Maybe LinkedNode<Entry<v>>
+
+            {-
+                Retrieves the next linked list in the
+                map and returns the top node of it.
+            -}
             get_next_top = \() -> {
                 let ret = Nothing : Maybe LinkedNode<Entry<v>> in {
+
                     this.current_index = this.current_index + 1;
 
-                    (while this.current_index < this.map.size and
-                           ret == Nothing
+                    (while (this.current_index < this.map.size and
+                           ret == Nothing)
                     {
                         let list = this.map.map[this.current_index] in {
                             if list.length > 0 then {
@@ -77,33 +90,26 @@ passive class MapIterator<v>
         this.current_node != Nothing
     }
 
-passive class HashMap<v>
+passive class HashMap<t> : Map<t>
     size   : uint
     items  : uint
     hasher : Hasher
-    map    : [LinkedList<Entry<v>>]
+    map    : [LinkedList<Entry<t>>]
 
-    {-
-        Initializer.
-    -}
     def init() : void {
         this.hasher = new Siphash;
         this.items = 0;
 
         -- The initial map can hold this many unique keys.
         this.size = 32;
-        this.map = new [LinkedList<Entry<v>>](this.size);
+        this.map = new [LinkedList<Entry<t>>](this.size);
 
         -- Initialize all lists.
         repeat i <- this.size {
-            this.map[i] = new LinkedList<Entry<v>>();
+            this.map[i] = new LinkedList<Entry<t>>();
         }
     }
 
-    {-
-        Removes any entry that has a
-        matching key from the map.
-    -}
     def remove(key : Id) : bool {
         let
             hash    = this.hasher.hash(key.get_id())
@@ -117,7 +123,7 @@ passive class HashMap<v>
                 while iter.has_next() {
                     let current = iter.next() in {
                         -- Extract the contents of the
-                        -- LinkedNode<Entry<v>>
+                        -- LinkedNode<Entry<t>>
                         match current with
                             Just node =>
                                 let entry = node.value in {
@@ -137,14 +143,10 @@ passive class HashMap<v>
         }
     }
 
-    {-
-        Sets the value for the given
-        key in the map.
-    -}
-    def set(key : Id, value : v) : void {
+    def set(key : Id, value : t) : void {
         let
             hash  = this.hasher.hash(key.get_id())
-            entry = new Entry<v>(key, hash, value)
+            entry = new Entry<t>(key, hash, value)
         in {
             -- Increase the size of the map if it contains
             -- about 75% of its capacity of keys.
@@ -165,21 +167,14 @@ passive class HashMap<v>
         }
     }
 
-    {-
-        Resize the map using the given
-        integer as the new size.
-
-        This will move all items in the entire
-        map. Possibly heavy operation!!
-    -}
     def resize(new_size : uint) : void {
-        let new_map = new [LinkedList<Entry<v>>](new_size) in {
+        let new_map = new [LinkedList<Entry<t>>](new_size) in {
             -- Initialize all lists.
             (repeat i <- new_size {
-                new_map[i] = new LinkedList<Entry<v>>();
+                new_map[i] = new LinkedList<Entry<t>>();
             });
 
-            let iterator = new MapIterator<v>(this) in {
+            let iterator = new HashMapIterator<t>(this) in {
                 -- Move all items from the old array to the new.
                 while iterator.has_next() {
                     let current = iterator.next() in {
@@ -202,11 +197,7 @@ passive class HashMap<v>
         }
     }
 
-    {-
-        Retrieves the value stored under
-        the given key in the map.
-    -}
-    def get_value(key : Id) : Maybe v {
+    def get_value(key : Id) : Maybe t {
         let
             hash = this.hasher.hash(key.get_id())
             k    = this.hasher.modulo(hash, this.size)
@@ -217,7 +208,7 @@ passive class HashMap<v>
             -}
             let
                 iter = list.iterator()
-                tmp  = Nothing : Maybe v
+                tmp  = Nothing : Maybe t
             in {
                 while iter.has_next() and tmp == Nothing {
                     let current = iter.next() in {

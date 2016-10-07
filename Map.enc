@@ -1,0 +1,33 @@
+import Linked_List
+import Entry
+
+trait Map<t>
+    require size  : uint
+    require items : uint
+
+    {-
+        Sets the value for the given
+        key in the map.
+    -}
+    require set(key : Id, value : t) : void
+
+    {-
+        Removes any entry that has a
+        matching key from the map.
+    -}
+    require remove(key : Id) : bool
+
+    {-
+        Resize the map using the given
+        integer as the new size.
+
+        This will move all items in the entire
+        map. Possibly heavy operation!!
+    -}
+    require resize(new_size : uint) : void
+
+    {-
+        Retrieves the value stored under
+        the given key in the map.
+    -}
+    require get_value(key : Id) : Maybe t
