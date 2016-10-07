@@ -2,20 +2,7 @@ import Linked_List
 import Siphash
 import Hasher
 import Id
-
-{-
-    Wrapper around key-value pairs for maps.
--}
-passive class Entry<v>
-    key      : Id
-    key_hash : int
-    value    : v
-
-    def init(key : Id, key_hash : int, value : v) : void {
-        this.key = key;
-        this.key_hash = key_hash;
-        this.value = value;
-    }
+import Entry
 
 passive class MapIterator<v>
     map           : HashMap<v>
