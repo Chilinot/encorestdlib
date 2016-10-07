@@ -83,9 +83,9 @@ bundle EUnit where
                         value = test.perform()     : bool
                     in {
                         if value != test.expected then {
-                            print("\tFailure!");
+                            print("\tFailure!\n");
                         } else {
-                            print("\tSuccess!");
+                            print("\tSuccess!\n");
                             finished = finished + 1;
                         };
                     }
