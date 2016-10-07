@@ -1,21 +1,13 @@
 trait Hasher
-    require hash(id : int) : int
+    require hash(id : uint) : uint
 
     {-
-        Casts 'value' and 'mod' to unsigned integers,
-        then performs "value % mod" and returns
-        the remainder cast to signed integer.
-
-        TODO: Do not return a signed integer!
-              It should only return unsigned!
-              OVERFLOW WARNING!
+        Performs value % mod
     -}
-    def modulo(value : int, mod : int) : int {
-        embed int
+    def modulo(value : uint, mod : uint) : uint {
+        embed uint
             uint64_t value = (uint64_t) #{value};
             uint64_t mod   = (uint64_t) #{mod};
-
-            // Calculate modulo and return value as signed
-            (int64_t) (value % mod);
+            (value % mod);
         end
     }

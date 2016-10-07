@@ -147,8 +147,8 @@ passive class Siphash : Hasher
         The 8-byte hash is then passed back to the caller
         as an encore integer.
     -}
-    def hash(id : int) : int {
-        embed int
+    def hash(id : uint) : uint {
+        embed uint
             // Hashing-key, can be any random bytes
             uint8_t k[16] = {
                 0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07, // k0
@@ -158,8 +158,8 @@ passive class Siphash : Hasher
             // Allocate 8 bytes on the stack for the hashcode
             uint8_t hash[8];
 
-            // Get the argument and make it usable
-            uint64_t id = (uint64_t) #{id};
+            // Get the argument
+            uint64_t id = #{id};
             uint8_t id_arr[8];
             U64TO8_LE(id_arr, id);
 
