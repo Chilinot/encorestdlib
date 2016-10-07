@@ -1,17 +1,26 @@
 bundle EUnit where
 
-    --def test_optional<a>(message : String, option : Maybe a, expected : a) : bool {
-    --    match option with
-    --        Just value when value == expected => true
-    --        Just value => {
-    --            print("Test {} failed! Expected \"Just {}\" got \"Just {}\".\n", message, expected, value);
-    --            false
-    --        }
-    --        Nothing => {
-    --            print("Test {} failed! Expected \"Just {}\" got \"Nothing\".\n", message, expected);
-    --            false
-    --        }
-    --}
+    def test_optional<a>(message : String, option : Maybe a, expected : a) : bool {
+        match option with
+            Just value when value == expected => true
+            Just value => {
+                print("Test {} failed! Expected \"Just x\" got \"Just y\".\n", message);
+                false
+            }
+            Nothing => {
+                print("Test {} failed! Expected \"Just x\" got \"Nothing\".\n", message);
+                false
+            }
+    }
+
+    def test_nothing<a>(message : String, option : Maybe a) : bool {
+        match option with
+            Nothing => true
+            Just x => {
+                print("Test {} failed! Expected value to be nothing!\n", message);
+                false
+            }
+    }
 
     passive class TestCase {
         name : String
