@@ -1,0 +1,265 @@
+{-
+    Binary Search Tree
+-}
+bundle BST where
+
+    typedef BSTCompFunc<t> = (t, t) -> int
+
+    -- BSTCompFunc for integers
+    def int_compare(x : int, y : int) : int {
+        if x < y then
+            -1
+        else if x == y then
+            0
+        else
+            1
+    }
+
+    passive class BSTNode<a> {
+        value : a
+        left  : Maybe BSTNode<a>
+        right : Maybe BSTNode<a>
+
+        def init(value : a) : void {
+            this.value = value;
+            this.left  = Nothing;
+            this.right = Nothing;
+        }
+    }
+
+    trait BSTAdd<a>
+        require root : Maybe BSTNode<a>
+
+        def add_subtree(node : BSTNode<a>, subtree : Maybe BSTNode<a>, comp_f : BSTCompFunc<a>) : void {
+            if subtree != Nothing then {
+                let
+                    current = Just node
+                    iterate = true
+                    sub_value = (match subtree with Just sub => sub.value)
+                in {
+                    while iterate {
+                        match current with
+                            Just n => {
+                                match comp_f(sub_value, n.value) with
+                                    -- Left
+                                    x when x == -1 or x == 0 => {
+                                        match n.left with
+                                            Just left => {
+                                                current = n.left;
+                                            }
+                                            Nothing => {
+                                                n.left = subtree;
+                                                iterate = false;
+                                            }
+                                    }
+                                    -- Right
+                                    1 => {
+                                        match n.right with
+                                            Just right => {
+                                                current = n.right;
+                                            }
+                                            Nothing => {
+                                                n.right = subtree;
+                                                iterate = false;
+                                            }
+                                    }
+                                    -- ERROR
+                                    _ => {
+                                        print("ERROR - BST.add_subtree: comp_f returned unexpected value!!");
+                                        iterate = false;
+                                    }
+                            }
+                            Nothing => {
+                                print("BST.add_subtree: Something went wrong!");
+                                iterate = false;
+                            }
+                    };
+                }
+            }
+        }
+
+        def add(value :  a, comp_f : BSTCompFunc<a>) : bool {
+            let
+                current  = this.root
+                new_node = Just new BSTNode<a>(value)
+                iterate  = true
+                retval   = true
+            in {
+                while iterate {
+                    match current with
+                        Just node => {
+                            match comp_f(value, node.value) with
+                                -- Left
+                                x when x == -1 or x == 0 => {
+                                    if node.left != Nothing then {
+                                        current = node.left;
+                                    } else {
+                                        node.left = new_node;
+                                        iterate = false;
+                                    };
+                                }
+                                -- Right
+                                1 => {
+                                    if node.right != Nothing then {
+                                        current = node.right;
+                                    } else {
+                                        node.right = new_node;
+                                        iterate = false;
+                                    };
+                                }
+                                -- Error!
+                                _ => {
+                                    --print("SEVERE ERROR! BSTAdd.add: comp_f returned integer other than -1, 0 or 1!");
+                                    iterate = false;
+                                    retval = false;
+                                }
+                        }
+                        Nothing => {
+                            -- This should only be reached if the root is "Nothing".
+                            this.root = new_node;
+                            iterate = false;
+                        }
+                };
+
+                -- Return
+                retval
+            }
+        }
+
+    trait BSTRemove<a>
+        require root : Maybe BSTNode<a>
+
+        {-
+            Retrieves and removes the leftmost value in
+            the tree defined by the given node as root.
+
+            RETURN: (A,B)
+        -}
+        def pop_leftmost(root : Maybe BSTNode<a>) : (Maybe a, bool) {
+            if root != Nothing then {
+                let
+                    prev    = Nothing : Maybe BSTNode<a>
+                    cursor  = root
+                    iterate = true
+                    retval  = (Nothing : Maybe a, false)
+                in {
+                    while iterate {
+                        match cursor with
+                            Just current => {
+                                match current.left with
+                                    Just left => {
+                                        prev = cursor;
+                                        cursor = current.left;
+                                    }
+                                    Nothing => {
+                                        -- Remove the current node from the tree and return its value.
+                                        let drop_this = false;
+
+                                        (match prev with
+                                            Just p => p.left = current.right
+                                            Nothing => drop_this = true
+                                        );
+
+                                        retval = (Just current.value, drop_this);
+                                        iterate = false;
+                                    }
+                            }
+                            Nothing => {
+                                -- Not good, we should not be in this branch!
+                                --TODO: Throw error (when errors have been added)
+                                iterate = false;
+                            }
+                    };
+
+                    -- Return
+                    retval
+                }
+            } else {
+                -- if root == Nothing
+                (Nothing, false)
+            }
+        }
+
+        def remove(value : a, comp_f : BSTCompFunc<a>) : Maybe String {
+            let
+                iterate = true
+                prev    = Nothing : Maybe BSTNode<a>
+                cursor  = this.root
+                retval  = Nothing : Maybe String
+            in {
+                while iterate {
+                    match cursor with
+                        Just current => {
+                            match comp_f(value, current.value) with
+                                -- Matching
+                                0 => {
+                                    (match this.pop_leftmost(current.right) with
+                                        (Just x, drop_child) => {
+                                            current.value = x;
+                                            if drop_child then {
+                                                current.right = Nothing;
+                                            }
+                                        }
+                                        --This node does not have a right-subtree!
+                                        (Nothing, false) => {
+                                            match prev with
+                                                Just p => {
+                                                    -- Set prev.<ref to current> = current.left
+                                                    match comp_f(current.value, p.value) with
+                                                        left when left == -1 or left == 0 => p.left = current.left
+                                                        right when right == 1 => p.right = current.left
+                                                }
+                                                Nothing => this.root = current.left
+                                        }
+                                    );
+
+                                    iterate = false;
+                                }
+                                -- Left
+                                (-1) => {
+                                    match current.left with
+                                        Just left => {
+                                            prev = cursor;
+                                            cursor = current.left;
+                                        }
+                                        Nothing => {
+                                            retval = Just "Could not locate given value in tree!";
+                                            iterate = false;
+                                        }
+                                }
+                                -- Right
+                                1 => {
+                                    match current.right with
+                                        Just right => {
+                                            prev = cursor;
+                                            cursor = current.right;
+                                        }
+                                        Nothing => {
+                                            retval = Just "Could not locate given value in tree!";
+                                            iterate = false;
+                                        }
+                                }
+                                -- Error!
+                                x => {
+                                    retval = Just "Compare function returned unexpected value! Value has to be either of {-1,0,1}!";
+                                    iterate = false;
+                                }
+                        }
+                        Nothing => {
+                            retval = Just "Could not locate the value in the tree.";
+                            iterate = false;
+                        }
+                };
+
+                -- Return
+                retval
+            }
+        }
+
+    passive class BSTree<a> : BSTAdd<a> + BSTRemove<a> {
+        root : Maybe BSTNode<a>
+
+        def init() : void {
+            this.root = Nothing;
+        }
+    }

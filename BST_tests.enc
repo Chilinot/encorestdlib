@@ -1,0 +1,1277 @@
+import BST
+
+def bst_test_add() : bool {
+    let bst = new BSTree<int>() in {
+        bst.add(12, int_compare) and
+        bst.add(23, int_compare)
+    }
+}
+
+def bst_test_add_adv() : bool {
+    let
+        bst = new BSTree<int>()
+        foo1 = bst.add(5, int_compare)
+        foo2 = bst.add(3, int_compare)
+        foo3 = bst.add(7, int_compare)
+        foo4 = bst.add(4, int_compare)
+        foo5 = bst.add(6, int_compare)
+        foo6 = bst.add(8, int_compare)
+        foo7 = bst.add(2, int_compare)
+    in {
+        {-
+            Test to ensure that the tree has
+            the following structure:
+
+                      5
+                   /     \
+                  3       7
+                 / \     / \
+                2   4   6   8
+        -}
+
+        match bst.root with
+            Just root => {
+                (match root.value with
+                    5 => true
+                    x => {
+                        println("\troot.value != 5!");
+                        false
+                    }
+                ) and
+                (match root.left with
+                    Just l => {
+                        (match l.value with
+                            3 => true
+                            x => {
+                                println("\tl.value != 3!");
+                                false
+                            }
+                        ) and
+                        (match l.left with
+                            Just ll => {
+                                (match ll.value with
+                                    2 => true
+                                    x => {
+                                        println("\tll.value != 2!");
+                                        false
+                                    }
+                                ) and
+                                (match ll.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlll-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match ll.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tllr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\tll-node == Nothing!");
+                                false
+                            }
+                        ) and
+                        (match l.right with
+                            Just lr => {
+                                (match lr.value with
+                                    4 => true
+                                    x => {
+                                        println("\tlr.value != 4!");
+                                        false
+                                    }
+                                ) and
+                                (match lr.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlrl != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match lr.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlrr != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\tlr-node == Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\tl-node == Nothing!");
+                        false
+                    }
+                ) and
+                (match root.right with
+                    Just r => {
+                        (match r.value with
+                            7 => true
+                            x => {
+                                println("\tr.value != 7!");
+                                false
+                            }
+                        ) and
+                        (match r.left with
+                            Just rl => {
+                                (match rl.value with
+                                    6 => true
+                                    x => {
+                                        println("\trl.value != 6!");
+                                        false
+                                    }
+                                ) and
+                                (match rl.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trll-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match rl.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trlr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\trl-node == Nothing!");
+                                false
+                            }
+                        ) and
+                        (match r.right with
+                            Just rr => {
+                                (match rr.value with
+                                    8 => true
+                                    x => {
+                                        println("\trr.value != 8!");
+                                        false
+                                    }
+                                ) and
+                                (match rr.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trr-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match rr.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\trr-node == Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\tr-node == Nothing!");
+                        false
+                    }
+                )
+            }
+            Nothing => {
+                println("\troot-node == Nothing!");
+                false
+            }
+    }
+}
+
+def bst_add_subtree_1() : bool {
+    let
+        tree_1 = new BSTree<int>()
+        tree_2 = new BSTree<int>()
+    in {
+        -- The resulting tree should have a structure equal to bst_test_add_adv.
+        tree_1.add(5, int_compare);
+        tree_1.add(3, int_compare);
+        tree_1.add(2, int_compare);
+        tree_1.add(4, int_compare);
+
+        tree_2.add(7, int_compare);
+        tree_2.add(6, int_compare);
+        tree_2.add(8, int_compare);
+
+        let root_1 = (match tree_1.root with Just root => root);
+
+        tree_1.add_subtree(root_1, tree_2.root, int_compare);
+
+        {-
+            Test to ensure that the tree has
+            the following structure:
+
+                      5
+                   /     \
+                  3       7
+                 / \     / \
+                2   4   6   8
+        -}
+
+        match tree_1.root with
+            Just root when root.value == 5 => {
+                (match root.left with
+                    Just l when l.value == 3 => {
+                        (match l.left with
+                            Just ll when ll.value == 2 => true
+                            _ => {
+                                print("\tll-node == Nothing, or does not contain 2!");
+                                false
+                            }
+                        ) and
+                        (match l.right with
+                            Just lr when lr.value == 4 => true
+                            _ => {
+                                print("\tlr-node == Nothing, or does not contain 4!");
+                                false
+                            }
+                        )
+                    }
+                    _ => {
+                        print("\tl-node == Nothing, or does not contain 3!");
+                        false
+                    }
+                ) and
+                (match root.right with
+                    Just r => {
+                        (match r.value with
+                            7 => true
+                            x => {
+                                print("\tr-node does not contain 7! r.value == {}\n", r.value);
+                                false
+                            }
+                        ) and
+                        (match r.left with
+                            Just rl => true
+                            _ => {
+                                print("\trl-node == Nothing, or does not contain 6!");
+                                false
+                            }
+                        ) and
+                        (match r.right with
+                            Just rr when rr.value == 8 => true
+                            _ => {
+                                print("\trr-node == Nothing, or does not contain 8!");
+                                false
+                            }
+                        )
+                    }
+                    _ => {
+                        print("\tr-node == Nothing!");
+                        false
+                    }
+                )
+            }
+            _ => {
+                print("\troot-node == Nothing, or does not contain 5!");
+                false
+            }
+    }
+}
+
+def bst_pop_leftmost_1() : bool {
+    let
+        bst = new BSTree<int>()
+    in {
+        -- Same tree as in basically all tests.
+        bst.add(5, int_compare);
+        bst.add(3, int_compare);
+        bst.add(7, int_compare);
+        bst.add(2, int_compare);
+        bst.add(4, int_compare);
+        bst.add(6, int_compare);
+        bst.add(8, int_compare);
+
+        let min = bst.pop_leftmost(bst.root);
+
+        (match min with
+            (Just x, false) when x == 2 => true
+            _ => {
+                print("\tmin-test failed!");
+                false
+            }
+        ) and
+        (match bst.root with
+            Just root when root.value == 5 => {
+                (match root.left with
+                    Just l when l.value == 3 => {
+                        (match l.left with
+                            Nothing => true
+                            _ => {
+                                print("\tll-node != Nothing!");
+                                false
+                            }
+                        ) and
+                        (match l.right with
+                            Just lr when lr.value == 4 => true
+                            _ => {
+                                print("\tlr-node == Nothing, or does not contain 4!");
+                                false
+                            }
+                        )
+                    }
+                    _ => {
+                        print("\tl-node == Nothing, or does not contain 3!");
+                        false
+                    }
+                ) and
+                (match root.right with
+                    Just r => {
+                        (match r.value with
+                            7 => true
+                            x => {
+                                print("\tr-node does not contain 7! r.value == {}\n", r.value);
+                                false
+                            }
+                        ) and
+                        (match r.left with
+                            Just rl => true
+                            _ => {
+                                print("\trl-node == Nothing, or does not contain 6!");
+                                false
+                            }
+                        ) and
+                        (match r.right with
+                            Just rr when rr.value == 8 => true
+                            _ => {
+                                print("\trr-node == Nothing, or does not contain 8!");
+                                false
+                            }
+                        )
+                    }
+                    _ => {
+                        print("\tr-node == Nothing!");
+                        false
+                    }
+                )
+            }
+            _ => {
+                print("\troot-node == Nothing, or does not contain 5!");
+                false
+            }
+        )
+    }
+}
+
+def bst_pop_leftmost_2() : bool {
+    let
+        bst = new BSTree<int>()
+    in {
+        -- Same tree as in basically all tests.
+        bst.add(5, int_compare);
+        bst.add(3, int_compare);
+        bst.add(7, int_compare);
+        bst.add(2, int_compare);
+        bst.add(4, int_compare);
+        bst.add(6, int_compare);
+        bst.add(8, int_compare);
+
+        let min1 = bst.pop_leftmost(bst.root);
+        let min2 = bst.pop_leftmost(bst.root);
+
+        (match min1 with
+            (Just 2, false) => true
+            _ => {
+                print("\tmin1 != 2!");
+                false
+            }
+        ) and
+        (match min2 with
+            (Just 3, false) => true
+            _ => {
+                print("\tmin2 != 3!");
+                false
+            }
+        ) and
+        (match bst.root with
+            Just root when root.value == 5 => {
+                (match root.left with
+                    Just l => {
+                        (match l.value with
+                            4 => true
+                            x => {
+                                print("\tl.value != 4!");
+                                false
+                            }
+                        ) and
+                        (match l.left with
+                            Nothing => true
+                            _ => {
+                                print("\tll-node != Nothing!");
+                                false
+                            }
+                        ) and
+                        (match l.right with
+                            Nothing => true
+                            _ => {
+                                print("\tlr-node != Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        print("\tl-node == Nothing!");
+                        false
+                    }
+                ) and
+                (match root.right with
+                    Just r => {
+                        (match r.value with
+                            7 => true
+                            x => {
+                                print("\tr-node does not contain 7! r.value == {}\n", r.value);
+                                false
+                            }
+                        ) and
+                        (match r.left with
+                            Just rl => true
+                            _ => {
+                                print("\trl-node == Nothing, or does not contain 6!");
+                                false
+                            }
+                        ) and
+                        (match r.right with
+                            Just rr when rr.value == 8 => true
+                            _ => {
+                                print("\trr-node == Nothing, or does not contain 8!");
+                                false
+                            }
+                        )
+                    }
+                    _ => {
+                        print("\tr-node == Nothing!");
+                        false
+                    }
+                )
+            }
+            _ => {
+                print("\troot-node == Nothing, or does not contain 5!");
+                false
+            }
+        )
+    }
+}
+
+def bst_remove_1() : bool {
+    let
+        bst = new BSTree<int>()
+    in {
+        bst.add(5, int_compare);
+        bst.add(3, int_compare);
+        bst.add(7, int_compare);
+        bst.add(4, int_compare);
+        bst.add(6, int_compare);
+        bst.add(8, int_compare);
+        bst.add(2, int_compare);
+
+        bst.remove(7, int_compare);
+
+        {-
+            Test to ensure that the tree has
+            the following structure:
+
+                      5
+                   /     \
+                  3       8
+                 / \     /
+                2   4   6
+        -}
+
+        match bst.root with
+            Just root => {
+                (match root.value with
+                    5 => true
+                    x => {
+                        println("\troot.value != 5!");
+                        false
+                    }
+                ) and
+                (match root.left with
+                    Just l => {
+                        (match l.value with
+                            3 => true
+                            x => {
+                                println("\tl.value != 3!");
+                                false
+                            }
+                        ) and
+                        (match l.left with
+                            Just ll => {
+                                (match ll.value with
+                                    2 => true
+                                    x => {
+                                        println("\tll.value != 2!");
+                                        false
+                                    }
+                                ) and
+                                (match ll.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlll-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match ll.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tllr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\tll-node == Nothing!");
+                                false
+                            }
+                        ) and
+                        (match l.right with
+                            Just lr => {
+                                (match lr.value with
+                                    4 => true
+                                    x => {
+                                        println("\tlr.value != 4!");
+                                        false
+                                    }
+                                ) and
+                                (match lr.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlrl != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match lr.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlrr != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\tlr-node == Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\tl-node == Nothing!");
+                        false
+                    }
+                ) and
+                (match root.right with
+                    Just r => {
+                        (match r.value with
+                            8 => true
+                            x => {
+                                println("\tr.value != 8!");
+                                false
+                            }
+                        ) and
+                        (match r.left with
+                            Just rl => {
+                                (match rl.value with
+                                    6 => true
+                                    x => {
+                                        println("\trl.value != 6!");
+                                        false
+                                    }
+                                ) and
+                                (match rl.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trll-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match rl.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trlr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\trl-node == Nothing!");
+                                false
+                            }
+                        ) and
+                        (match r.right with
+                            Nothing => true
+                            _ => {
+                                println("\trr-node != Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\tr-node == Nothing!");
+                        false
+                    }
+                )
+            }
+            Nothing => {
+                println("\troot-node == Nothing!");
+                false
+            }
+    }
+}
+
+def bst_remove_2() : bool {
+    let
+        bst = new BSTree<int>()
+    in {
+        bst.add(5, int_compare);
+        bst.add(3, int_compare);
+        bst.add(7, int_compare);
+        bst.add(4, int_compare);
+        bst.add(6, int_compare);
+        bst.add(8, int_compare);
+        bst.add(2, int_compare);
+
+        bst.remove(7, int_compare);
+        bst.remove(8, int_compare);
+
+        {-
+            Test to ensure that the tree has
+            the following structure:
+
+                      5
+                   /     \
+                  3       6
+                 / \
+                2   4
+        -}
+
+        match bst.root with
+            Just root => {
+                (match root.value with
+                    5 => true
+                    x => {
+                        println("\troot.value != 5!");
+                        false
+                    }
+                ) and
+                (match root.left with
+                    Just l => {
+                        (match l.value with
+                            3 => true
+                            x => {
+                                println("\tl.value != 3!");
+                                false
+                            }
+                        ) and
+                        (match l.left with
+                            Just ll => {
+                                (match ll.value with
+                                    2 => true
+                                    x => {
+                                        println("\tll.value != 2!");
+                                        false
+                                    }
+                                ) and
+                                (match ll.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlll-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match ll.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tllr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\tll-node == Nothing!");
+                                false
+                            }
+                        ) and
+                        (match l.right with
+                            Just lr => {
+                                (match lr.value with
+                                    4 => true
+                                    x => {
+                                        println("\tlr.value != 4!");
+                                        false
+                                    }
+                                ) and
+                                (match lr.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlrl != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match lr.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlrr != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\tlr-node == Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\tl-node == Nothing!");
+                        false
+                    }
+                ) and
+                (match root.right with
+                    Just r => {
+                        (match r.value with
+                            6 => true
+                            x => {
+                                println("\tr.value != 6!");
+                                false
+                            }
+                        ) and
+                        (match r.left with
+                            Nothing => true
+                            _ => {
+                                println("\trl-node != Nothing!");
+                                false
+                            }
+                        ) and
+                        (match r.right with
+                            Nothing => true
+                            _ => {
+                                println("\trr-node != Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\tr-node == Nothing!");
+                        false
+                    }
+                )
+            }
+            Nothing => {
+                println("\troot-node == Nothing!");
+                false
+            }
+    }
+}
+
+def bst_remove_root() : bool {
+    let
+        bst = new BSTree<int>()
+    in {
+        bst.add(5, int_compare);
+        bst.add(3, int_compare);
+        bst.add(7, int_compare);
+        bst.add(4, int_compare);
+        bst.add(6, int_compare);
+        bst.add(8, int_compare);
+        bst.add(2, int_compare);
+
+        -- Remove root node
+        bst.remove(5, int_compare);
+
+        {-
+            Test to ensure that the tree has
+            the following structure:
+
+                      6
+                   /     \
+                  3       7
+                 / \       \
+                2   4       8
+        -}
+
+        match bst.root with
+            Just root => {
+                (match root.value with
+                    6 => true
+                    x => {
+                        println("\troot.value != 6!");
+                        false
+                    }
+                ) and
+                (match root.left with
+                    Just l => {
+                        (match l.value with
+                            3 => true
+                            x => {
+                                println("\tl.value != 3!");
+                                false
+                            }
+                        ) and
+                        (match l.left with
+                            Just ll => {
+                                (match ll.value with
+                                    2 => true
+                                    x => {
+                                        println("\tll.value != 2!");
+                                        false
+                                    }
+                                ) and
+                                (match ll.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlll-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match ll.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tllr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\tll-node == Nothing!");
+                                false
+                            }
+                        ) and
+                        (match l.right with
+                            Just lr => {
+                                (match lr.value with
+                                    4 => true
+                                    x => {
+                                        println("\tlr.value != 4!");
+                                        false
+                                    }
+                                ) and
+                                (match lr.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlrl != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match lr.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlrr != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\tlr-node == Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\tl-node == Nothing!");
+                        false
+                    }
+                ) and
+                (match root.right with
+                    Just r => {
+                        (match r.value with
+                            7 => true
+                            x => {
+                                println("\tr.value != 7!");
+                                false
+                            }
+                        ) and
+                        (match r.left with
+                            Nothing => true
+                            _ => {
+                                println("\trl-node != Nothing!");
+                                false
+                            }
+                        ) and
+                        (match r.right with
+                            Just rr => {
+                                (match rr.value with
+                                    8 => true
+                                    x => {
+                                        println("\trr.value != 8!");
+                                        false
+                                    }
+                                ) and
+                                (match rr.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trr-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match rr.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\trr-node == Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\tr-node == Nothing!");
+                        false
+                    }
+                )
+            }
+            Nothing => {
+                println("\troot-node == Nothing!");
+                false
+            }
+    }
+}
+
+def bst_remove_leaf_1() : bool {
+    let
+        bst = new BSTree<int>()
+    in {
+        bst.add(5, int_compare);
+        bst.add(3, int_compare);
+        bst.add(7, int_compare);
+        bst.add(4, int_compare);
+        bst.add(6, int_compare);
+        bst.add(8, int_compare);
+        bst.add(2, int_compare);
+
+        bst.remove(4, int_compare);
+
+        {-
+            Test to ensure that the tree has
+            the following structure:
+
+                      5
+                   /     \
+                  3       7
+                 /       / \
+                2       6   8
+        -}
+
+        match bst.root with
+            Just root => {
+                (match root.value with
+                    5 => true
+                    x => {
+                        println("\troot.value != 5!");
+                        false
+                    }
+                ) and
+                (match root.left with
+                    Just l => {
+                        (match l.value with
+                            3 => true
+                            x => {
+                                println("\tl.value != 3!");
+                                false
+                            }
+                        ) and
+                        (match l.left with
+                            Just ll => {
+                                (match ll.value with
+                                    2 => true
+                                    x => {
+                                        println("\tll.value != 2!");
+                                        false
+                                    }
+                                ) and
+                                (match ll.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlll-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match ll.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tllr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\tll-node == Nothing!");
+                                false
+                            }
+                        ) and
+                        (match l.right with
+                            Nothing => true
+                            _ => {
+                                println("\tlr-node != Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\tl-node == Nothing!");
+                        false
+                    }
+                ) and
+                (match root.right with
+                    Just r => {
+                        (match r.value with
+                            7 => true
+                            x => {
+                                println("\tr.value != 7!");
+                                false
+                            }
+                        ) and
+                        (match r.left with
+                            Just rl => {
+                                (match rl.value with
+                                    6 => true
+                                    x => {
+                                        println("\trl.value != 6!");
+                                        false
+                                    }
+                                ) and
+                                (match rl.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trll-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match rl.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trlr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\trl-node == Nothing!");
+                                false
+                            }
+                        ) and
+                        (match r.right with
+                            Just rr => {
+                                (match rr.value with
+                                    8 => true
+                                    x => {
+                                        println("\trr.value != 8!");
+                                        false
+                                    }
+                                ) and
+                                (match rr.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trr-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match rr.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\trr-node == Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\tr-node == Nothing!");
+                        false
+                    }
+                )
+            }
+            Nothing => {
+                println("\troot-node == Nothing!");
+                false
+            }
+    }
+}
+
+def bst_remove_leaf_2() : bool {
+    let
+        bst = new BSTree<int>()
+    in {
+        bst.add(5, int_compare);
+        bst.add(3, int_compare);
+        bst.add(7, int_compare);
+        bst.add(4, int_compare);
+        bst.add(6, int_compare);
+        bst.add(8, int_compare);
+        bst.add(2, int_compare);
+
+        bst.remove(2, int_compare);
+
+        {-
+            Test to ensure that the tree has
+            the following structure:
+
+                      5
+                   /     \
+                  3       7
+                   \     / \
+                    4   6   8
+        -}
+
+        match bst.root with
+            Just root => {
+                (match root.value with
+                    5 => true
+                    x => {
+                        println("\troot.value != 5!");
+                        false
+                    }
+                ) and
+                (match root.left with
+                    Just l => {
+                        (match l.value with
+                            3 => true
+                            x => {
+                                println("\tl.value != 3!");
+                                false
+                            }
+                        ) and
+                        (match l.left with
+                            Nothing => true
+                            _ => {
+                                println("\tll-node != Nothing!");
+                                false
+                            }
+                        ) and
+                        (match l.right with
+                            Just lr => {
+                                (match lr.value with
+                                    4 => true
+                                    x => {
+                                        println("\tlr.value != 4!");
+                                        false
+                                    }
+                                ) and
+                                (match lr.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlr-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match lr.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\tlr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\tll-node == Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\tl-node == Nothing!");
+                        false
+                    }
+                ) and
+                (match root.right with
+                    Just r => {
+                        (match r.value with
+                            7 => true
+                            x => {
+                                println("\tr.value != 7!");
+                                false
+                            }
+                        ) and
+                        (match r.left with
+                            Just rl => {
+                                (match rl.value with
+                                    6 => true
+                                    x => {
+                                        println("\trl.value != 6!");
+                                        false
+                                    }
+                                ) and
+                                (match rl.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trll-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match rl.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trlr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\trl-node == Nothing!");
+                                false
+                            }
+                        ) and
+                        (match r.right with
+                            Just rr => {
+                                (match rr.value with
+                                    8 => true
+                                    x => {
+                                        println("\trr.value != 8!");
+                                        false
+                                    }
+                                ) and
+                                (match rr.left with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trr-node != Nothing!");
+                                        false
+                                    }
+                                ) and
+                                (match rr.right with
+                                    Nothing => true
+                                    _ => {
+                                        println("\trr-node != Nothing!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\trr-node == Nothing!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\tr-node == Nothing!");
+                        false
+                    }
+                )
+            }
+            Nothing => {
+                println("\troot-node == Nothing!");
+                false
+            }
+    }
+}

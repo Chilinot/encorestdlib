@@ -1,12 +1,11 @@
 import EUnit
 import HashMap_tests
 import Linked_List_tests
+import BST_tests
 
-class Main
+class Main {
     def main() : void {
-        let
-            tests = new TestSuite("LinkedList", 100)
-        in {
+        let tests = new TestSuite("LinkedList", 100) in {
             tests.assert_true("init", create);
             tests.assert_true("push one int", push_one);
             tests.assert_true("push two ints", push_two);
@@ -17,9 +16,7 @@ class Main
 
             tests.run();
         };
-        let
-            tests = new TestSuite("HashMap", 100)
-        in {
+        let tests = new TestSuite("HashMap", 100) in {
             tests.assert_true("set and get", set_and_get);
             tests.assert_true("items and size #1", items_and_size_1);
             tests.assert_true("items and size #2", items_and_size_2);
@@ -42,4 +39,19 @@ class Main
 
             tests.run();
         };
+        let tests = new TestSuite("BST", 100) in {
+            tests.assert_true("Add", bst_test_add);
+            tests.assert_true("Add advanced", bst_test_add_adv);
+            tests.assert_true("Add Subtree #1", bst_add_subtree_1);
+            tests.assert_true("Pop leftmost #1", bst_pop_leftmost_1);
+            tests.assert_true("Pop leftmost #2", bst_pop_leftmost_2);
+            tests.assert_true("Remove #1", bst_remove_1);
+            tests.assert_true("Remove #2", bst_remove_2);
+            tests.assert_true("Remove root", bst_remove_root);
+            tests.assert_true("Remove leaf #1", bst_remove_leaf_1);
+            tests.assert_true("Remove leaf #2", bst_remove_leaf_2);
+
+            tests.run();
+        };
     }
+}
