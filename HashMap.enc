@@ -1,7 +1,7 @@
 import Linked_List
 import Siphash
 import Hasher
-import Id
+import HashCode
 import Map
 import Iterator
 
@@ -101,30 +101,28 @@ passive class HashMapIterator<v> : Iterator<Entry<v>>
         this.current_node != Nothing
     }
 
-passive class HashMap<t> : Map<t>
+passive class HashMap<v> : Map<v>
     size   : uint
     items  : uint
-    hasher : Hasher
-    map    : [LinkedList<Entry<t>>]
+    map    : [LinkedList<Entry<v>>]
 
     def init() : void {
-        this.hasher = new Siphash;
         this.items = 0;
 
         -- The initial map can hold this many unique keys.
         this.size = 32;
-        this.map = new [LinkedList<Entry<t>>](this.size);
+        this.map = new [LinkedList<Entry<v>>](this.size);
 
         -- Initialize all lists.
         repeat i <- this.size {
-            this.map[i] = new LinkedList<Entry<t>>();
+            this.map[i] = new LinkedList<Entry<v>>();
         }
     }
 
-    def remove(key : Id) : bool {
+    def remove(key : HashCode) : bool {
         let
-            hash    = this.hasher.hash(key.get_id())
-            k       = this.hasher.modulo(hash, this.size)
+            hash    = key.get_hash()
+            k       = hash % this.size
             list    = this.map[k]
             ret_val = false
         in {
@@ -134,7 +132,7 @@ passive class HashMap<t> : Map<t>
                 while iter.has_next() {
                     let current = iter.next() in {
                         -- Extract the contents of the
-                        -- LinkedNode<Entry<t>>
+                        -- LinkedNode<Entry<k, v>>
                         match current with
                             Just node =>
                                 let entry = node.value in {
@@ -154,10 +152,10 @@ passive class HashMap<t> : Map<t>
         }
     }
 
-    def set(key : Id, value : t) : void {
+    def set(key : HashCode, value : v) : void {
         let
-            hash  = this.hasher.hash(key.get_id())
-            entry = new Entry<t>(key, hash, value)
+            hash  = key.get_hash()
+            entry = new Entry<v>(key, value)
         in {
             -- Increase the size of the map if it contains
             -- about 75% of its capacity of keys.
@@ -165,10 +163,11 @@ passive class HashMap<t> : Map<t>
                 this.resize(this.size * 2);
             };
 
+            -- Ensure there are no conflicting entries in the map.
             this.remove(key);
 
             let
-                k = this.hasher.modulo(hash, this.size)
+                k = hash % this.size
                 list = this.map[k]
             in {
                 list.push(entry);
@@ -179,21 +178,21 @@ passive class HashMap<t> : Map<t>
     }
 
     def resize(new_size : uint) : void {
-        let new_map = new [LinkedList<Entry<t>>](new_size) in {
+        let new_map = new [LinkedList<Entry<v>>](new_size) in {
             -- Initialize all lists.
             (repeat i <- new_size {
-                new_map[i] = new LinkedList<Entry<t>>();
+                new_map[i] = new LinkedList<Entry<v>>();
             });
 
-            let iterator = new HashMapIterator<t>(this) in {
+            let iterator = new HashMapIterator<v>(this) in {
                 -- Move all items from the old array to the new.
                 while iterator.has_next() {
                     let current = iterator.next() in {
                         match current with
                             Just entry => {
                                 let
-                                    hash = entry.key_hash
-                                    k    = this.hasher.modulo(hash, new_size)
+                                    hash = entry.key.get_hash()
+                                    k    = hash % new_size
                                     list = new_map[k]
                                 in {
                                     list.push(entry);
@@ -208,10 +207,10 @@ passive class HashMap<t> : Map<t>
         }
     }
 
-    def get_value(key : Id) : Maybe t {
+    def get_value(key : HashCode) : Maybe v {
         let
-            hash = this.hasher.hash(key.get_id())
-            k    = this.hasher.modulo(hash, this.size)
+            hash = key.get_hash()
+            k    = hash % this.size
             list = this.map[k]
         in {
             {-
@@ -219,7 +218,7 @@ passive class HashMap<t> : Map<t>
             -}
             let
                 iter = list.iterator()
-                tmp  = Nothing : Maybe t
+                tmp  = Nothing : Maybe v
             in {
                 while iter.has_next() and tmp == Nothing {
                     let current = iter.next() in {

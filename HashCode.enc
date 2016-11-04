@@ -5,17 +5,14 @@ embed
 body
 end
 
-{-
-    Defines a unique identifier to objects.
--}
-trait Id
-    require id : int
+trait HashCode
+    require hash_code : uint
 
     {-
-        Generates a unique identifier based
-        on the memory adress of the object.
+        Generates a hash-value based
+        on the memory adress of this object.
     -}
-    def generate_id() : int {
+    def compute_hash() : uint {
         {-
             1. Retrieve memory adress of object.
             2. Call siphash on the adress for obfuscation.
@@ -51,17 +48,10 @@ trait Id
         end
     }
 
-    {-
-        True if this object has the same identifier
-        as the given object.
-    -}
-    def equals(object : Id) : bool {
-        this.id == object.get_id()
+    def get_hash() : uint {
+        this.hash_code
     }
 
-    {-
-        Returns the identifier of this object.
-    -}
-    def get_id() : int {
-        this.id
+    def equals(other : HashCode) : bool {
+        this.hash_code == other.get_hash()
     }

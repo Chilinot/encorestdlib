@@ -1,7 +1,6 @@
 import Linked_List
-import Entry
 
-trait Map<t>
+trait Map<v>
     require size  : uint
     require items : uint
 
@@ -9,13 +8,13 @@ trait Map<t>
         Sets the value for the given
         key in the map.
     -}
-    require set(key : Id, value : t) : void
+    require set(key : HashCode, value : v) : void
 
     {-
         Removes any entry that has a
         matching key from the map.
     -}
-    require remove(key : Id) : bool
+    require remove(key : HashCode) : bool
 
     {-
         Resize the map using the given
@@ -30,4 +29,4 @@ trait Map<t>
         Retrieves the value stored under
         the given key in the map.
     -}
-    require get_value(key : Id) : Maybe t
+    require get_value(key : HashCode) : Maybe v

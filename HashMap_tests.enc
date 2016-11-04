@@ -1,18 +1,11 @@
 import HashMap
-import Id
-
-passive class Foo : Id {
-    id : int
-
-    def init() : void {
-        this.id = this.generate_id();
-    }
-}
+import HashCode
+import wrappers.Integer
 
 def set_and_get() : bool {
     let
         map = new HashMap<int>
-        foo = new Foo()
+        foo = new Integer(0)
     in {
         map.set(foo, 12);
         match map.get_value(foo) with
@@ -23,8 +16,8 @@ def set_and_get() : bool {
 def items_and_size_1() : bool {
     let
         map = new HashMap<int>
-        foo = new Foo()
-        bar = new Foo()
+        foo = new Integer(0)
+        bar = new Integer(0)
     in {
         map.set(foo, 12);
         map.set(bar, 12);
@@ -35,8 +28,8 @@ def items_and_size_1() : bool {
 def items_and_size_2() : bool {
     let
         map = new HashMap<int>
-        foo = new Foo()
-        bar = new Foo()
+        foo = new Integer(0)
+        bar = new Integer(0)
     in {
         map.set(foo, 12);
         map.set(bar, 12);
@@ -48,7 +41,7 @@ def items_and_size_2() : bool {
 def remove_1() : bool {
     let
         map = new HashMap<int>
-        foo = new Foo()
+        foo = new Integer(0)
         ret = true
     in {
         map.set(foo, 12);
@@ -64,8 +57,8 @@ def remove_1() : bool {
 def remove_2() : bool {
     let
         map = new HashMap<int>
-        foo = new Foo()
-        bar = new Foo()
+        foo = new Integer(0)
+        bar = new Integer(0)
         ret = true
     in {
         map.set(foo, 12);
@@ -92,7 +85,7 @@ def remove_2() : bool {
 def dual_remove() : bool {
     let
         map = new HashMap<int>
-        foo = new Foo()
+        foo = new Integer(0)
         ret = true
     in {
         -- This is tested in remove_1 & remove_2.
@@ -107,7 +100,7 @@ def dual_remove() : bool {
 def items_1() : int {
     let
         map = new HashMap<int>
-        foo = new Foo()
+        foo = new Integer(0)
     in {
         map.set(foo,12);
         map.items
@@ -116,8 +109,8 @@ def items_1() : int {
 def items_2() : int {
     let
         map = new HashMap<int>
-        foo = new Foo()
-        bar = new Foo()
+        foo = new Integer(0)
+        bar = new Integer(0)
     in {
         map.set(foo, 12);
         map.set(bar, 42);
@@ -127,8 +120,8 @@ def items_2() : int {
 def items_3() : int {
     let
         map = new HashMap<int>
-        foo = new Foo()
-        bar = new Foo()
+        foo = new Integer(0)
+        bar = new Integer(0)
     in {
         map.set(foo, 12);
         map.set(bar, 42);
@@ -139,15 +132,15 @@ def items_3() : int {
 def items_4() : int {
     let
         map = new HashMap<int>
-        f1  = new Foo()
-        f2  = new Foo()
-        f3  = new Foo()
-        f4  = new Foo()
-        f5  = new Foo()
-        f6  = new Foo()
-        f7  = new Foo()
-        f8  = new Foo()
-        f9  = new Foo()
+        f1  = new Integer(0)
+        f2  = new Integer(0)
+        f3  = new Integer(0)
+        f4  = new Integer(0)
+        f5  = new Integer(0)
+        f6  = new Integer(0)
+        f7  = new Integer(0)
+        f8  = new Integer(0)
+        f9  = new Integer(0)
     in {
         map.set(f1,1);
         map.set(f2,2);
@@ -165,15 +158,15 @@ def items_4() : int {
 def size_1() : int {
     let
         map = new HashMap<int>
-        f1  = new Foo()
-        f2  = new Foo()
-        f3  = new Foo()
-        f4  = new Foo()
-        f5  = new Foo()
-        f6  = new Foo()
-        f7  = new Foo()
-        f8  = new Foo()
-        f9  = new Foo()
+        f1  = new Integer(0)
+        f2  = new Integer(0)
+        f3  = new Integer(0)
+        f4  = new Integer(0)
+        f5  = new Integer(0)
+        f6  = new Integer(0)
+        f7  = new Integer(0)
+        f8  = new Integer(0)
+        f9  = new Integer(0)
     in {
         map.set(f1,1);
         map.set(f2,2);
@@ -192,7 +185,7 @@ def iterator_test_1() : bool {
     let
         ret = false
         map = new HashMap<int>()
-        foo = new Foo()
+        foo = new Integer(0)
     in {
         map.set(foo, 12);
         let
@@ -249,8 +242,8 @@ def iterator_test_2() : bool {
     let
         ret = false
         map = new HashMap<int>()
-        foo = new Foo()
-        bar = new Foo()
+        foo = new Integer(0)
+        bar = new Integer(0)
     in {
         map.set(foo, 12);
         map.set(bar, 43);
@@ -320,32 +313,32 @@ def resize_1() : bool {
         map = new HashMap<int>()
         old_internal_map = map.map
         retval = false
-        f0  = new Foo()
-        f1  = new Foo()
-        f2  = new Foo()
-        f3  = new Foo()
-        f4  = new Foo()
-        f5  = new Foo()
-        f6  = new Foo()
-        f7  = new Foo()
-        f8  = new Foo()
-        f9  = new Foo()
-        f10 = new Foo()
-        f11 = new Foo()
-        f12 = new Foo()
-        f13 = new Foo()
-        f14 = new Foo()
-        f15 = new Foo()
-        f16 = new Foo()
-        f17 = new Foo()
-        f18 = new Foo()
-        f19 = new Foo()
-        f20 = new Foo()
-        f21 = new Foo()
-        f22 = new Foo()
-        f23 = new Foo()
-        f24 = new Foo()
-        f25 = new Foo()
+        f0  = new Integer(0)
+        f1  = new Integer(0)
+        f2  = new Integer(0)
+        f3  = new Integer(0)
+        f4  = new Integer(0)
+        f5  = new Integer(0)
+        f6  = new Integer(0)
+        f7  = new Integer(0)
+        f8  = new Integer(0)
+        f9  = new Integer(0)
+        f10 = new Integer(0)
+        f11 = new Integer(0)
+        f12 = new Integer(0)
+        f13 = new Integer(0)
+        f14 = new Integer(0)
+        f15 = new Integer(0)
+        f16 = new Integer(0)
+        f17 = new Integer(0)
+        f18 = new Integer(0)
+        f19 = new Integer(0)
+        f20 = new Integer(0)
+        f21 = new Integer(0)
+        f22 = new Integer(0)
+        f23 = new Integer(0)
+        f24 = new Integer(0)
+        f25 = new Integer(0)
     in {
         -- Saturate the map.
         map.set(f0, 0);
