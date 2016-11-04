@@ -13,6 +13,7 @@ class Main {
             tests.assert_true("push three ints and remove middle", push_three_and_remove_middle);
             tests.assert_true("length #1", length_1);
             tests.assert_true("length #2", length_2);
+            tests.assert_true("remove_all #1", remove_all_1);
 
             tests.run();
         };

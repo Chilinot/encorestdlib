@@ -185,3 +185,40 @@ def length_2() : bool {
         list.length == 2
     }
 }
+def remove_all_1() : bool {
+    let
+        list = new LinkedList<char>()
+    in {
+        list.push('a');
+        list.push('a');
+        list.push('b');
+        list.push('a');
+        list.push('a');
+
+        match list.length with
+            5 => {
+                list.remove_all('a');
+                (match list.length with
+                    1 => true
+                    x => false
+                ) and
+                match list.top with
+                    Just node => {
+                        (match node.prev with
+                            Nothing => true
+                            _ => false
+                        ) and
+                        (match node.next with
+                            Nothing => true
+                            _ => false
+                        ) and
+                        (match node.value with
+                            'b' => true
+                            _ => false
+                        )
+                    }
+                    Nothing => false
+            }
+            x => false
+    }
+}

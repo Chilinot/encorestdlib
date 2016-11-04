@@ -75,6 +75,37 @@ passive class LinkedList<t> : LinkedPush<t> + LinkedDrop<t>
         new LinkedIterator<t>(this)
     }
 
+    def remove_all(value : t) : void {
+        let
+            remove = new LinkedList<LinkedNode<t>>()
+            iter = this.iterator()
+        in {
+            -- Locate all occurances of 'value' for removal in next step.
+            (while iter.has_next() {
+                let current = iter.next() in {
+                    match current with
+                        Just node => {
+                            if node.value == value then {
+                                -- Store current node for removal
+                                remove.push(node);
+                            }
+                        }
+                }
+            });
+
+            -- Remove all nodes located in previous iteration.
+            let rem_iter = remove.iterator() in {
+                while rem_iter.has_next() {
+                    let current = rem_iter.next() in {
+                        match current with
+                            -- Node.value == LinkedNode<t> that is marked for removal
+                            Just node => this.drop(node.value);
+                    }
+                }
+            }
+        }
+    }
+
 passive class LinkedIterator<t>
     list   : LinkedList<t>
     cursor : Maybe LinkedNode<t>
