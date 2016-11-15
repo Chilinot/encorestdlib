@@ -1,11 +1,18 @@
 import HashMap
 import HashCode
-import wrappers.Integer
+import Wrappers
+
+passive class Foo : HashCode {
+    hash_code : uint
+    def init() : void {
+        this.hash_code = this.hash_adress();
+    }
+}
 
 def set_and_get() : bool {
     let
         map = new HashMap<int>
-        foo = new Integer(0)
+        foo = new Foo()
     in {
         map.set(foo, 12);
         match map.get_value(foo) with
@@ -16,8 +23,8 @@ def set_and_get() : bool {
 def items_and_size_1() : bool {
     let
         map = new HashMap<int>
-        foo = new Integer(0)
-        bar = new Integer(0)
+        foo = new Foo()
+        bar = new Foo()
     in {
         map.set(foo, 12);
         map.set(bar, 12);
@@ -28,8 +35,8 @@ def items_and_size_1() : bool {
 def items_and_size_2() : bool {
     let
         map = new HashMap<int>
-        foo = new Integer(0)
-        bar = new Integer(0)
+        foo = new Foo()
+        bar = new Foo()
     in {
         map.set(foo, 12);
         map.set(bar, 12);
@@ -41,7 +48,7 @@ def items_and_size_2() : bool {
 def remove_1() : bool {
     let
         map = new HashMap<int>
-        foo = new Integer(0)
+        foo = new Foo()
         ret = true
     in {
         map.set(foo, 12);
@@ -57,8 +64,8 @@ def remove_1() : bool {
 def remove_2() : bool {
     let
         map = new HashMap<int>
-        foo = new Integer(0)
-        bar = new Integer(0)
+        foo = new Foo()
+        bar = new Foo()
         ret = true
     in {
         map.set(foo, 12);
@@ -85,7 +92,7 @@ def remove_2() : bool {
 def dual_remove() : bool {
     let
         map = new HashMap<int>
-        foo = new Integer(0)
+        foo = new Foo()
         ret = true
     in {
         -- This is tested in remove_1 & remove_2.
@@ -100,7 +107,7 @@ def dual_remove() : bool {
 def items_1() : int {
     let
         map = new HashMap<int>
-        foo = new Integer(0)
+        foo = new Foo()
     in {
         map.set(foo,12);
         map.items
@@ -109,8 +116,8 @@ def items_1() : int {
 def items_2() : int {
     let
         map = new HashMap<int>
-        foo = new Integer(0)
-        bar = new Integer(0)
+        foo = new Foo()
+        bar = new Foo()
     in {
         map.set(foo, 12);
         map.set(bar, 42);
@@ -120,8 +127,8 @@ def items_2() : int {
 def items_3() : int {
     let
         map = new HashMap<int>
-        foo = new Integer(0)
-        bar = new Integer(0)
+        foo = new Foo()
+        bar = new Foo()
     in {
         map.set(foo, 12);
         map.set(bar, 42);
@@ -132,15 +139,15 @@ def items_3() : int {
 def items_4() : int {
     let
         map = new HashMap<int>
-        f1  = new Integer(0)
-        f2  = new Integer(0)
-        f3  = new Integer(0)
-        f4  = new Integer(0)
-        f5  = new Integer(0)
-        f6  = new Integer(0)
-        f7  = new Integer(0)
-        f8  = new Integer(0)
-        f9  = new Integer(0)
+        f1  = new Foo()
+        f2  = new Foo()
+        f3  = new Foo()
+        f4  = new Foo()
+        f5  = new Foo()
+        f6  = new Foo()
+        f7  = new Foo()
+        f8  = new Foo()
+        f9  = new Foo()
     in {
         map.set(f1,1);
         map.set(f2,2);
@@ -158,15 +165,15 @@ def items_4() : int {
 def size_1() : int {
     let
         map = new HashMap<int>
-        f1  = new Integer(0)
-        f2  = new Integer(0)
-        f3  = new Integer(0)
-        f4  = new Integer(0)
-        f5  = new Integer(0)
-        f6  = new Integer(0)
-        f7  = new Integer(0)
-        f8  = new Integer(0)
-        f9  = new Integer(0)
+        f1  = new Foo()
+        f2  = new Foo()
+        f3  = new Foo()
+        f4  = new Foo()
+        f5  = new Foo()
+        f6  = new Foo()
+        f7  = new Foo()
+        f8  = new Foo()
+        f9  = new Foo()
     in {
         map.set(f1,1);
         map.set(f2,2);
@@ -185,7 +192,7 @@ def iterator_test_1() : bool {
     let
         ret = false
         map = new HashMap<int>()
-        foo = new Integer(0)
+        foo = new Foo()
     in {
         map.set(foo, 12);
         let
@@ -242,8 +249,8 @@ def iterator_test_2() : bool {
     let
         ret = false
         map = new HashMap<int>()
-        foo = new Integer(0)
-        bar = new Integer(0)
+        foo = new Foo()
+        bar = new Foo()
     in {
         map.set(foo, 12);
         map.set(bar, 43);
@@ -313,32 +320,32 @@ def resize_1() : bool {
         map = new HashMap<int>()
         old_internal_map = map.map
         retval = false
-        f0  = new Integer(0)
-        f1  = new Integer(0)
-        f2  = new Integer(0)
-        f3  = new Integer(0)
-        f4  = new Integer(0)
-        f5  = new Integer(0)
-        f6  = new Integer(0)
-        f7  = new Integer(0)
-        f8  = new Integer(0)
-        f9  = new Integer(0)
-        f10 = new Integer(0)
-        f11 = new Integer(0)
-        f12 = new Integer(0)
-        f13 = new Integer(0)
-        f14 = new Integer(0)
-        f15 = new Integer(0)
-        f16 = new Integer(0)
-        f17 = new Integer(0)
-        f18 = new Integer(0)
-        f19 = new Integer(0)
-        f20 = new Integer(0)
-        f21 = new Integer(0)
-        f22 = new Integer(0)
-        f23 = new Integer(0)
-        f24 = new Integer(0)
-        f25 = new Integer(0)
+        f0  = new Foo()
+        f1  = new Foo()
+        f2  = new Foo()
+        f3  = new Foo()
+        f4  = new Foo()
+        f5  = new Foo()
+        f6  = new Foo()
+        f7  = new Foo()
+        f8  = new Foo()
+        f9  = new Foo()
+        f10 = new Foo()
+        f11 = new Foo()
+        f12 = new Foo()
+        f13 = new Foo()
+        f14 = new Foo()
+        f15 = new Foo()
+        f16 = new Foo()
+        f17 = new Foo()
+        f18 = new Foo()
+        f19 = new Foo()
+        f20 = new Foo()
+        f21 = new Foo()
+        f22 = new Foo()
+        f23 = new Foo()
+        f24 = new Foo()
+        f25 = new Foo()
     in {
         -- Saturate the map.
         map.set(f0, 0);
@@ -409,190 +416,187 @@ def resize_1() : bool {
         );
 
         -- Are we still able to retrieve the values?
-        retval = retval and (match map.get_value(f0) with
+        retval and (match map.get_value(f0) with
                 Just v  => v == 0
                 Nothing => {
                     print("\tGet value check #0 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f1) with
+            ) and
+        (match map.get_value(f1) with
                 Just v  => v == 1
                 Nothing => {
                     print("\tGet value check #1 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f2) with
+            ) and
+        (match map.get_value(f2) with
                 Just v  => v == 2
                 Nothing => {
                     print("\tGet value check #2 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f3) with
+            ) and
+        (match map.get_value(f3) with
                 Just v  => v == 3
                 Nothing => {
                     print("\tGet value check #3 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f4) with
+            ) and
+        (match map.get_value(f4) with
                 Just v  => v == 4
                 Nothing => {
                     print("\tGet value check #4 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f5) with
+            ) and
+        (match map.get_value(f5) with
                 Just v  => v == 5
                 Nothing => {
                     print("\tGet value check #5 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f6) with
+            ) and
+        (match map.get_value(f6) with
                 Just v  => v == 6
                 Nothing => {
                     print("\tGet value check #6 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f7) with
+            ) and
+        (match map.get_value(f7) with
                 Just v  => v == 7
                 Nothing => {
                     print("\tGet value check #7 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f8) with
+            ) and
+        (match map.get_value(f8) with
                 Just v  => v == 8
                 Nothing => {
                     print("\tGet value check #8 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f9) with
+            ) and
+        (match map.get_value(f9) with
                 Just v  => v == 9
                 Nothing => {
                     print("\tGet value check #9 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f10) with
+            ) and
+        (match map.get_value(f10) with
                 Just v  => v == 10
                 Nothing => {
                     print("\tGet value check #10 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f11) with
+            ) and
+        (match map.get_value(f11) with
                 Just v  => v == 11
                 Nothing => {
                     print("\tGet value check #11 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f12) with
+            ) and
+        (match map.get_value(f12) with
                 Just v  => v == 12
                 Nothing => {
                     print("\tGet value check #12 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f13) with
+            ) and
+        (match map.get_value(f13) with
                 Just v  => v == 13
                 Nothing => {
                     print("\tGet value check #13 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f14) with
+            ) and
+        (match map.get_value(f14) with
                 Just v  => v == 14
                 Nothing => {
                     print("\tGet value check #14 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f15) with
+            ) and
+        (match map.get_value(f15) with
                 Just v  => v == 15
                 Nothing => {
                     print("\tGet value check #15 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f16) with
+            ) and
+        (match map.get_value(f16) with
                 Just v  => v == 16
                 Nothing => {
                     print("\tGet value check #16 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f17) with
+            ) and
+        (match map.get_value(f17) with
                 Just v  => v == 17
                 Nothing => {
                     print("\tGet value check #17 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f18) with
+            ) and
+        (match map.get_value(f18) with
                 Just v  => v == 18
                 Nothing => {
                     print("\tGet value check #18 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f19) with
+            ) and
+        (match map.get_value(f19) with
                 Just v  => v == 19
                 Nothing => {
                     print("\tGet value check #19 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f20) with
+            ) and
+        (match map.get_value(f20) with
                 Just v  => v == 20
                 Nothing => {
                     print("\tGet value check #20 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f21) with
+            ) and
+        (match map.get_value(f21) with
                 Just v  => v == 21
                 Nothing => {
                     print("\tGet value check #21 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f22) with
+            ) and
+        (match map.get_value(f22) with
                 Just v  => v == 22
                 Nothing => {
                     print("\tGet value check #22 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f23) with
+            ) and
+        (match map.get_value(f23) with
                 Just v  => v == 23
                 Nothing => {
                     print("\tGet value check #23 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f24) with
+            ) and
+        (match map.get_value(f24) with
                 Just v  => v == 24
                 Nothing => {
                     print("\tGet value check #24 failed!");
                     false
                 }
-            );
-        retval = retval and (match map.get_value(f25) with
+            ) and
+        (match map.get_value(f25) with
                 Just v  => v == 25
                 Nothing => {
                     print("\tGet value check #25 failed!");
                     false
                 }
-            );
-
-        -- Return
-        retval
+        )
     }
 }
