@@ -1,0 +1,47 @@
+import Trie
+
+def basic_1() : bool {
+    let trie = new Trie() in {
+        match trie.root with
+            Nothing => true
+            Just x => {
+                println("\ttrie.root != Nothing!");
+                false
+            }
+    }
+}
+
+def add_1() : bool {
+    let
+        str = "foo"
+        f = new Char('f')
+        o = new Char('o')
+        trie = new Trie()
+    in {
+        trie.add(str);
+
+        match trie.root with
+            Just root => {
+                (match root.word_end with
+                    false => true
+                    true => {
+                        println("\troot.word_end == true!");
+                        false
+                    }
+                ) and
+                (match root.child_map.get_value(f) with
+                    Just child_1 => {
+                        true
+                    }
+                    Nothing => {
+                        println("\troot.child_map does not contain child for 'f'!");
+                        false
+                    }
+                )
+            }
+            Nothing => {
+                println("\ttrie.root == Nothing!");
+                false
+            }
+    }
+}

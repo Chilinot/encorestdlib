@@ -1,0 +1,50 @@
+bundle Trie where
+    import Wrappers
+    import HashMap
+
+    passive class TrieNode {
+        child_map : HashMap<TrieNode>
+        word_end : bool -- true if this node marks the end of a word
+
+        def init(arr : [char], index : uint) : void {
+            this.child_map = new HashMap<TrieNode>();
+            this.word_end = false;
+            this.add_recur(arr, index);
+        }
+
+        {-
+            Recursive add.
+        -}
+        def add_recur(arr : [char], index : uint) : void {
+            if index > |arr| then {
+                this.word_end = true;
+            } else {
+                let
+                    character = new Char(arr[index])
+                    child = this.child_map.get_value(character)
+                in {
+                    match child with
+                        Just node => node.add_recur(arr, index + 1)
+                        Nothing => this.child_map.set(character, new TrieNode(arr, index + 1))
+                }
+            };
+        }
+    }
+
+    passive class Trie {
+        root : Maybe TrieNode
+
+        def init() : void {
+            this.root = Nothing;
+        }
+
+        def add(str : String) : void {
+            let
+                arr = str.to_array()
+            in {
+                match this.root with
+                    Just root => root.add_recur(arr, 0)
+                    Nothing => this.root = Just new TrieNode(arr, 0)
+            }
+        }
+    }

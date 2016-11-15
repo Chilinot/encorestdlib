@@ -2,6 +2,7 @@ import EUnit
 import HashMap_tests
 import Linked_List_tests
 import BST_tests
+import Trie_tests
 import Wrappers_tests
 
 class Main {
@@ -62,6 +63,9 @@ class Main {
 
             tests.run();
         };
+        let tests = new TestSuite("Trie", 100) in {
+            tests.assert_true("Basic #1", basic_1);
+            tests.assert_true("Add #1", add_1);
 
             tests.run();
         };
