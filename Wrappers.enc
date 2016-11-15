@@ -1,0 +1,35 @@
+bundle Wrappers where
+    import HashCode
+
+    trait Wrapper<t> {
+        require value : t
+        require get_value() : t
+    }
+
+    passive class Int : Wrapper<int> + HashCode {
+        value : int
+        hash_code : uint
+
+        def init(value : int) : void {
+            this.value = value;
+            this.hash_code = embed uint (uint64_t) #{value}; end;
+        }
+
+        def get_value() : int {
+            this.value
+        }
+    }
+
+    passive class Char : Wrapper<char> + HashCode {
+        value : char
+        hash_code : uint
+
+        def init(value : char) : void {
+            this.value = value;
+            this.hash_code = embed uint (uint64_t) #{value}; end;
+        }
+
+        def get_value() : char {
+            this.value
+        }
+    }
