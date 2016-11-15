@@ -2,6 +2,7 @@ import EUnit
 import HashMap_tests
 import Linked_List_tests
 import BST_tests
+import Wrappers_tests
 
 class Main {
     def main() : void {
@@ -51,6 +52,16 @@ class Main {
             tests.assert_true("Remove root", bst_remove_root);
             tests.assert_true("Remove leaf #1", bst_remove_leaf_1);
             tests.assert_true("Remove leaf #2", bst_remove_leaf_2);
+            tests.assert_true("Get_value #1", bst_get_value_1);
+
+            tests.run();
+        };
+        let tests = new TestSuite("Wrappers", 100) in {
+            tests.assert_true("Integer #1", int_1);
+            tests.assert_true("Character #1", char_1);
+
+            tests.run();
+        };
 
             tests.run();
         };
