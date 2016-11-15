@@ -1,22 +1,22 @@
 import BST
 
 def bst_test_add() : bool {
-    let bst = new BSTree<int>() in {
-        bst.add(12, int_compare) and
-        bst.add(23, int_compare)
+    let bst = new BSTree<int,int>() in {
+        bst.add(12, 12, int_compare) and
+        bst.add(23, 23, int_compare)
     }
 }
 
 def bst_test_add_adv() : bool {
     let
-        bst = new BSTree<int>()
-        foo1 = bst.add(5, int_compare)
-        foo2 = bst.add(3, int_compare)
-        foo3 = bst.add(7, int_compare)
-        foo4 = bst.add(4, int_compare)
-        foo5 = bst.add(6, int_compare)
-        foo6 = bst.add(8, int_compare)
-        foo7 = bst.add(2, int_compare)
+        bst = new BSTree<int,int>()
+        foo1 = bst.add(5,5, int_compare)
+        foo2 = bst.add(3,3, int_compare)
+        foo3 = bst.add(7,7, int_compare)
+        foo4 = bst.add(4,4, int_compare)
+        foo5 = bst.add(6,6, int_compare)
+        foo6 = bst.add(8,8, int_compare)
+        foo7 = bst.add(2,2, int_compare)
     in {
         {-
             Test to ensure that the tree has
@@ -194,18 +194,18 @@ def bst_test_add_adv() : bool {
 
 def bst_add_subtree_1() : bool {
     let
-        tree_1 = new BSTree<int>()
-        tree_2 = new BSTree<int>()
+        tree_1 = new BSTree<int,int>()
+        tree_2 = new BSTree<int,int>()
     in {
         -- The resulting tree should have a structure equal to bst_test_add_adv.
-        tree_1.add(5, int_compare);
-        tree_1.add(3, int_compare);
-        tree_1.add(2, int_compare);
-        tree_1.add(4, int_compare);
+        tree_1.add(5,5, int_compare);
+        tree_1.add(3,3, int_compare);
+        tree_1.add(2,2, int_compare);
+        tree_1.add(4,4, int_compare);
 
-        tree_2.add(7, int_compare);
-        tree_2.add(6, int_compare);
-        tree_2.add(8, int_compare);
+        tree_2.add(7,7, int_compare);
+        tree_2.add(6,6, int_compare);
+        tree_2.add(8,8, int_compare);
 
         let root_1 = (match tree_1.root with Just root => root);
 
@@ -285,21 +285,21 @@ def bst_add_subtree_1() : bool {
 
 def bst_pop_leftmost_1() : bool {
     let
-        bst = new BSTree<int>()
+        bst = new BSTree<int,int>()
     in {
         -- Same tree as in basically all tests.
-        bst.add(5, int_compare);
-        bst.add(3, int_compare);
-        bst.add(7, int_compare);
-        bst.add(2, int_compare);
-        bst.add(4, int_compare);
-        bst.add(6, int_compare);
-        bst.add(8, int_compare);
+        bst.add(5,5, int_compare);
+        bst.add(3,3, int_compare);
+        bst.add(7,7, int_compare);
+        bst.add(2,2, int_compare);
+        bst.add(4,4, int_compare);
+        bst.add(6,6, int_compare);
+        bst.add(8,8, int_compare);
 
         let min = bst.pop_leftmost(bst.root);
 
         (match min with
-            (Just x, false) when x == 2 => true
+            (Just (k,v), false) when k == 2 and v == 2 => true
             _ => {
                 print("\tmin-test failed!");
                 false
@@ -369,29 +369,29 @@ def bst_pop_leftmost_1() : bool {
 
 def bst_pop_leftmost_2() : bool {
     let
-        bst = new BSTree<int>()
+        bst = new BSTree<int,int>()
     in {
         -- Same tree as in basically all tests.
-        bst.add(5, int_compare);
-        bst.add(3, int_compare);
-        bst.add(7, int_compare);
-        bst.add(2, int_compare);
-        bst.add(4, int_compare);
-        bst.add(6, int_compare);
-        bst.add(8, int_compare);
+        bst.add(5,5, int_compare);
+        bst.add(3,3, int_compare);
+        bst.add(7,7, int_compare);
+        bst.add(2,2, int_compare);
+        bst.add(4,4, int_compare);
+        bst.add(6,6, int_compare);
+        bst.add(8,8, int_compare);
 
         let min1 = bst.pop_leftmost(bst.root);
         let min2 = bst.pop_leftmost(bst.root);
 
         (match min1 with
-            (Just 2, false) => true
+            (Just (2,2), false) => true
             _ => {
                 print("\tmin1 != 2!");
                 false
             }
         ) and
         (match min2 with
-            (Just 3, false) => true
+            (Just (3,3), false) => true
             _ => {
                 print("\tmin2 != 3!");
                 false
@@ -468,15 +468,15 @@ def bst_pop_leftmost_2() : bool {
 
 def bst_remove_1() : bool {
     let
-        bst = new BSTree<int>()
+        bst = new BSTree<int,int>()
     in {
-        bst.add(5, int_compare);
-        bst.add(3, int_compare);
-        bst.add(7, int_compare);
-        bst.add(4, int_compare);
-        bst.add(6, int_compare);
-        bst.add(8, int_compare);
-        bst.add(2, int_compare);
+        bst.add(5,5, int_compare);
+        bst.add(3,3, int_compare);
+        bst.add(7,7, int_compare);
+        bst.add(4,4, int_compare);
+        bst.add(6,6, int_compare);
+        bst.add(8,8, int_compare);
+        bst.add(2,2, int_compare);
 
         bst.remove(7, int_compare);
 
@@ -634,15 +634,15 @@ def bst_remove_1() : bool {
 
 def bst_remove_2() : bool {
     let
-        bst = new BSTree<int>()
+        bst = new BSTree<int,int>()
     in {
-        bst.add(5, int_compare);
-        bst.add(3, int_compare);
-        bst.add(7, int_compare);
-        bst.add(4, int_compare);
-        bst.add(6, int_compare);
-        bst.add(8, int_compare);
-        bst.add(2, int_compare);
+        bst.add(5,5, int_compare);
+        bst.add(3,3, int_compare);
+        bst.add(7,7, int_compare);
+        bst.add(4,4, int_compare);
+        bst.add(6,6, int_compare);
+        bst.add(8,8, int_compare);
+        bst.add(2,2, int_compare);
 
         bst.remove(7, int_compare);
         bst.remove(8, int_compare);
@@ -779,15 +779,15 @@ def bst_remove_2() : bool {
 
 def bst_remove_root() : bool {
     let
-        bst = new BSTree<int>()
+        bst = new BSTree<int,int>()
     in {
-        bst.add(5, int_compare);
-        bst.add(3, int_compare);
-        bst.add(7, int_compare);
-        bst.add(4, int_compare);
-        bst.add(6, int_compare);
-        bst.add(8, int_compare);
-        bst.add(2, int_compare);
+        bst.add(5,5, int_compare);
+        bst.add(3,3, int_compare);
+        bst.add(7,7, int_compare);
+        bst.add(4,4, int_compare);
+        bst.add(6,6, int_compare);
+        bst.add(8,8, int_compare);
+        bst.add(2,2, int_compare);
 
         -- Remove root node
         bst.remove(5, int_compare);
@@ -946,15 +946,15 @@ def bst_remove_root() : bool {
 
 def bst_remove_leaf_1() : bool {
     let
-        bst = new BSTree<int>()
+        bst = new BSTree<int,int>()
     in {
-        bst.add(5, int_compare);
-        bst.add(3, int_compare);
-        bst.add(7, int_compare);
-        bst.add(4, int_compare);
-        bst.add(6, int_compare);
-        bst.add(8, int_compare);
-        bst.add(2, int_compare);
+        bst.add(5,5, int_compare);
+        bst.add(3,3, int_compare);
+        bst.add(7,7, int_compare);
+        bst.add(4,4, int_compare);
+        bst.add(6,6, int_compare);
+        bst.add(8,8, int_compare);
+        bst.add(2,2, int_compare);
 
         bst.remove(4, int_compare);
 
@@ -1112,15 +1112,15 @@ def bst_remove_leaf_1() : bool {
 
 def bst_remove_leaf_2() : bool {
     let
-        bst = new BSTree<int>()
+        bst = new BSTree<int,int>()
     in {
-        bst.add(5, int_compare);
-        bst.add(3, int_compare);
-        bst.add(7, int_compare);
-        bst.add(4, int_compare);
-        bst.add(6, int_compare);
-        bst.add(8, int_compare);
-        bst.add(2, int_compare);
+        bst.add(5,5, int_compare);
+        bst.add(3,3, int_compare);
+        bst.add(7,7, int_compare);
+        bst.add(4,4, int_compare);
+        bst.add(6,6, int_compare);
+        bst.add(8,8, int_compare);
+        bst.add(2,2, int_compare);
 
         bst.remove(2, int_compare);
 
@@ -1273,5 +1273,32 @@ def bst_remove_leaf_2() : bool {
                 println("\troot-node == Nothing!");
                 false
             }
+    }
+}
+
+def bst_get_value_1() : bool {
+    let
+        bst = new BSTree<int,int>()
+    in {
+        bst.add(3,13,int_compare);
+        bst.add(1,11,int_compare);
+        bst.add(2,12,int_compare);
+        bst.add(4,14,int_compare);
+        bst.add(5,15,int_compare);
+
+        (match bst.get_value(3, int_compare) with
+            Just 13 => true
+            x => {
+                println("\tbst.get_value(3) != 13!");
+                false
+            }
+        ) and
+        (match bst.get_value(5, int_compare) with
+            Just 15 => true
+            x => {
+                println("\tbst.get_value(5) != 15");
+                false
+            }
+        )
     }
 }
