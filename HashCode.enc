@@ -12,7 +12,7 @@ trait HashCode
         Generates a hash-value based
         on the memory adress of this object.
     -}
-    def compute_hash() : uint {
+    def hash_adress() : uint {
         {-
             1. Retrieve memory adress of object.
             2. Call siphash on the adress for obfuscation.
