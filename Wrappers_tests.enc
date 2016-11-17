@@ -1,0 +1,37 @@
+import Wrappers
+
+def int_1() : bool {
+    let i = new Int(12);
+
+    (match i.get_value() with
+        12 => true
+        x => {
+            println("\ti.get_value != 12!");
+            false
+        }
+    ) and (match i.get_hash() with
+        12 => true
+        x => {
+            println("\ti.get_hash != 12!");
+            false
+        }
+    )
+}
+
+def char_1() : bool {
+    let c = new Char('a');
+
+    (match c.get_value() with
+        'a' => true
+        x => {
+            println("\tc.get_value != 'c'!");
+            false
+        }
+    ) and (match c.get_hash() with
+        97 => true
+        x => {
+            println("\tc.get_hash != 97!");
+            false
+        }
+    )
+}
