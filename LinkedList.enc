@@ -1,21 +1,31 @@
 bundle LinkedList where
-    passive class LinkedNode<t>
+    passive class LinkedNode<t> {
         value : t
         prev  : Maybe LinkedNode<t>
         next  : Maybe LinkedNode<t>
 
         def init(value : t,
-                prev : Maybe LinkedNode<t>,
-                next : Maybe LinkedNode<t>) : void
+                 prev : Maybe LinkedNode<t>,
+                 next : Maybe LinkedNode<t>) : void
         {
             this.value = value;
             this.prev = prev;
             this.next = next;
         }
+    }
 
-    trait LinkedPush<t>
-        require top : Maybe LinkedNode<t>
-        require length : int
+    passive class LinkedList<t> {
+        top : Maybe LinkedNode<t>
+        length : int
+
+        def init() : void {
+            this.top = Nothing : Maybe LinkedNode<t>;
+            this.length = 0;
+        }
+
+        def iterator() : LinkedIterator<t> {
+            new LinkedIterator<t>(this)
+        }
 
         def push(value : t) : void {
             let
@@ -29,10 +39,6 @@ bundle LinkedList where
                 this.length = this.length + 1;
             }
         }
-
-    trait LinkedDrop<t>
-        require top : Maybe LinkedNode<t>
-        require length : int
 
         def drop(node : LinkedNode<t>) : void {
             let
@@ -61,19 +67,6 @@ bundle LinkedList where
                 -- before decrementing this integer!!
                 this.length = this.length - 1;
             }
-        }
-
-    passive class LinkedList<t> : LinkedPush<t> + LinkedDrop<t>
-        top : Maybe LinkedNode<t>
-        length : int
-
-        def init() : void {
-            this.top = Nothing : Maybe LinkedNode<t>;
-            this.length = 0;
-        }
-
-        def iterator() : LinkedIterator<t> {
-            new LinkedIterator<t>(this)
         }
 
         def remove_all(value : t) : void {
@@ -106,8 +99,9 @@ bundle LinkedList where
                 }
             }
         }
+    }
 
-    passive class LinkedIterator<t>
+    passive class LinkedIterator<t> {
         list   : LinkedList<t>
         cursor : Maybe LinkedNode<t>
 
@@ -135,3 +129,4 @@ bundle LinkedList where
         def has_next() : bool {
             this.cursor != Nothing
         }
+    }
