@@ -9,13 +9,13 @@ bundle Trie where
         def init(arr : [char], index : uint) : void {
             this.child_map = new HashMap<TrieNode>();
             this.word_end = false;
-            this.add_recur(arr, index);
+            this.add(arr, index);
         }
 
         {-
             Recursive add.
         -}
-        def add_recur(arr : [char], index : uint) : void {
+        def add(arr : [char], index : uint) : void {
             if index >= |arr| then {
                 this.word_end = true;
             } else {
@@ -24,7 +24,7 @@ bundle Trie where
                     child = this.child_map.get_value(character)
                 in {
                     match child with
-                        Just node => node.add_recur(arr, index + 1)
+                        Just node => node.add(arr, index + 1)
                         Nothing => this.child_map.set(character, new TrieNode(arr, index + 1))
                 }
             };
@@ -39,11 +39,9 @@ bundle Trie where
         }
 
         def add(str : String) : void {
-            let
-                arr = str.to_array()
-            in {
+            let arr = str.to_array() in {
                 match this.root with
-                    Just root => root.add_recur(arr, 0)
+                    Just root => root.add(arr, 0)
                     Nothing => this.root = Just new TrieNode(arr, 0)
             }
         }
