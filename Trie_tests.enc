@@ -1,3 +1,4 @@
+import Array
 import Trie
 
 def basic_1() : bool {
@@ -108,4 +109,74 @@ def add_1() : bool {
                 false
             }
     }
+}
+
+def trie_contains_1() : bool {
+    let trie = new Trie();
+
+    let tjosan = "tjosan";
+    let foobar = "foobar";
+    let foorab = "foorab";
+    let longword = "averyveryverylongword";
+
+    trie.add(tjosan);
+    trie.add(foobar);
+    trie.add(foorab);
+    trie.add(longword);
+
+    if not trie.contains(tjosan) then {
+        println("\tDoes not contain 'tjosan'!");
+        false
+    } else if not trie.contains(foobar) then {
+        println("\tDoes not contain 'foobar'!");
+        false
+    } else if not trie.contains(foorab) then {
+        println("\tDoes not contain 'foorab'!");
+        false
+    } else if not trie.contains(longword) then {
+        println("\tDoes not contain 'averyveryverylongword'!");
+        false
+    } else {
+        true
+    }
+}
+
+def trie_prefix_1() : bool {
+    let trie = new Trie();
+    trie.add("foobar");
+
+    if not trie.is_prefix("foo") then {
+        println("\t'foo' is not a prefix but should be!");
+        false
+    } else if trie.is_prefix("bar") then {
+        println("\t'bar' is prefix, but shouldn't be.");
+        false
+    } else {
+        true
+    }
+}
+
+def trie_suffix_1() : bool {
+    let trie = new Trie();
+    trie.add("foobar");
+    trie.add("foorab");
+
+    let suffixes = trie.get_suffixes("foo");
+
+    match suffixes with
+        Just arr => {
+            if not contains_str(arr, "bar") then {
+                println("\tsuffix 'bar' not in returned list!");
+                false
+            } else if not contains_str(arr, "rab") then {
+                println("\tsuffix 'rab' not in returned list!");
+                false
+            } else {
+                true
+            }
+        }
+        Nothing => {
+            println("\ttrie.get_suffixes('foo') returned Nothing!");
+            false
+        }
 }

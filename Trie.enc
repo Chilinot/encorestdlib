@@ -29,6 +29,21 @@ bundle Trie where
                 }
             };
         }
+
+        def contains(arr : [char], index : uint) : bool {
+            --TODO: Implement
+            false
+        }
+
+        def is_prefix(arr : [char], index : uint) : bool {
+            --TODO: Implement
+            false
+        }
+
+        def get_suffixes(arr : [char], index : uint) : Maybe [String] {
+            --TODO: Implement
+            Nothing
+        }
     }
 
     passive class Trie {
@@ -44,5 +59,20 @@ bundle Trie where
                     Just root => root.add(arr, 0)
                     Nothing => this.root = Just new TrieNode(arr, 0)
             }
+        }
+
+        def contains(str : String) : bool {
+            --TODO: Implement
+            false
+        }
+
+        def is_prefix(str : String) : bool {
+            --TODO: Implement
+            false
+        }
+
+        def get_suffixes(str : String) : Maybe [String] {
+            --TODO: Implement
+            Nothing
         }
     }

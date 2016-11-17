@@ -66,6 +66,9 @@ class Main {
         let tests = new TestSuite("Trie", 100) in {
             tests.assert_true("Basic #1", basic_1);
             tests.assert_true("Add #1", add_1);
+            tests.assert_true("Contains #1", trie_contains_1);
+            tests.assert_true("Prefix #1", trie_prefix_1);
+            tests.assert_true("Get_Suffixes #1", trie_suffix_1);
 
             tests.run();
         };
