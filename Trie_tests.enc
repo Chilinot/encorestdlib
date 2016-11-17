@@ -29,9 +29,73 @@ def add_1() : bool {
                         false
                     }
                 ) and
+                (match root.child_map.items with
+                    1 => true
+                    x => {
+                        println("\troot.map.items != 1!");
+                        false
+                    }
+                ) and
                 (match root.child_map.get_value(f) with
                     Just child_1 => {
-                        true
+                        (match child_1.word_end with
+                            false => true
+                            true => {
+                                println("\tchild_1.word_end == true!");
+                                false
+                            }
+                        ) and
+                        (match child_1.child_map.items with
+                            1 => true
+                            x => {
+                                println("\tchild_1.map.items != 1!");
+                                false
+                            }
+                        ) and
+                        (match child_1.child_map.get_value(o) with
+                            Just child_2 => {
+                                (match child_2.word_end with
+                                    false => true
+                                    true => {
+                                        println("\tchild_2.word_end == true!");
+                                        false
+                                    }
+                                ) and
+                                (match child_2.child_map.items with
+                                    1 => true
+                                    x => {
+                                        println("\tchild_2.map.items != 1!");
+                                        false
+                                    }
+                                ) and
+                                (match child_2.child_map.get_value(o) with
+                                    Just child_3 => {
+                                        (match child_3.word_end with
+                                            true => true
+                                            false => {
+                                                println("\tchild_3.word_end == false!");
+                                                false
+                                            }
+                                        ) and
+                                        (match child_3.child_map.items with
+                                            0 => true
+                                            x => {
+                                                println("\tchild_3.map.items != 0!");
+                                                false
+                                            }
+                                        )
+                                    }
+                                    Nothing => {
+                                        println("\tchild_2.child_map does not contain child for 'o'!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\tchild_1.child_map does not contain child for 'o'!");
+                                false
+                            }
+                        )
                     }
                     Nothing => {
                         println("\troot.child_map does not contain child for 'f'!");

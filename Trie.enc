@@ -16,7 +16,7 @@ bundle Trie where
             Recursive add.
         -}
         def add_recur(arr : [char], index : uint) : void {
-            if index > |arr| then {
+            if index >= |arr| then {
                 this.word_end = true;
             } else {
                 let
