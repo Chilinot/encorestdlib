@@ -12,9 +12,6 @@ bundle Trie where
             this.add(arr, index);
         }
 
-        {-
-            Recursive add.
-        -}
         def add(arr : [char], index : uint) : void {
             if index >= |arr| then {
                 this.word_end = true;
@@ -31,18 +28,59 @@ bundle Trie where
         }
 
         def contains(arr : [char], index : uint) : bool {
-            --TODO: Implement
-            false
+            if index >= |arr| then {
+                -- return
+                this.word_end
+            } else {
+                let
+                    character = new Char(arr[index])
+                    child = this.child_map.get_value(character)
+                in {
+                    match child with
+                        Just node => node.contains(arr, index + 1)
+                        Nothing => false
+                }
+            }
         }
 
         def is_prefix(arr : [char], index : uint) : bool {
-            --TODO: Implement
-            false
+            if index >= |arr| then {
+                -- return
+                not this.word_end
+            } else {
+                let
+                    character = new Char(arr[index])
+                    child = this.child_map.get_value(character)
+                in {
+                    match child with
+                        Just node => node.is_prefix(arr, index + 1)
+                        Nothing => false
+                }
+            }
         }
 
         def get_suffixes(arr : [char], index : uint) : Maybe [String] {
-            --TODO: Implement
-            Nothing
+            if index >= |arr| then {
+                if not this.word_end then {
+                    let iter = new HashMapIterator<Char>(this.child_map);
+                    while iter.has_next() {
+                        let current = iter.next();
+                        -- TODO: Finish implementation
+                    }
+                } else {
+                    -- return
+                    Nothing
+                }
+            } else {
+                let
+                    character = new Char(arr[index])
+                    child = this.child_map.get_value(character)
+                in {
+                    match child with
+                        Just node => node.get_suffixes(arr, index + 1)
+                        Nothing => Nothing
+                }
+            }
         }
     }
 
@@ -62,17 +100,20 @@ bundle Trie where
         }
 
         def contains(str : String) : bool {
-            --TODO: Implement
-            false
+            match this.root with
+                Just node => node.contains(str.to_array(), 0)
+                Nothing => false
         }
 
         def is_prefix(str : String) : bool {
-            --TODO: Implement
-            false
+            match this.root with
+                Just node => node.is_prefix(str.to_array(), 0)
+                Nothing => false
         }
 
         def get_suffixes(str : String) : Maybe [String] {
-            --TODO: Implement
-            Nothing
+            match this.root with
+                Just node => node.get_suffixes(str.to_array(), 0)
+                Nothing => Nothing : Maybe [String]
         }
     }

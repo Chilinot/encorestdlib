@@ -136,6 +136,9 @@ def trie_contains_1() : bool {
     } else if not trie.contains(longword) then {
         println("\tDoes not contain 'averyveryverylongword'!");
         false
+    } else if trie.contains("asdf") then {
+        println("\tContains 'asdf' but shouldn't!");
+        false
     } else {
         true
     }
@@ -150,6 +153,9 @@ def trie_prefix_1() : bool {
         false
     } else if trie.is_prefix("bar") then {
         println("\t'bar' is prefix, but shouldn't be.");
+        false
+    } else if trie.is_prefix("foobar") then {
+        println("\t'foobar' is prefix, but shouldn't be.");
         false
     } else {
         true
