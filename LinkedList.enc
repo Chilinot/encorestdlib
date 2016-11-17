@@ -1,0 +1,137 @@
+bundle LinkedList where
+    passive class LinkedNode<t>
+        value : t
+        prev  : Maybe LinkedNode<t>
+        next  : Maybe LinkedNode<t>
+
+        def init(value : t,
+                prev : Maybe LinkedNode<t>,
+                next : Maybe LinkedNode<t>) : void
+        {
+            this.value = value;
+            this.prev = prev;
+            this.next = next;
+        }
+
+    trait LinkedPush<t>
+        require top : Maybe LinkedNode<t>
+        require length : int
+
+        def push(value : t) : void {
+            let
+                new_node = Just new LinkedNode<t>(value, Nothing, this.top)
+            in {
+                if this.top != Nothing then {
+                    match this.top with
+                        Just node => node.prev = new_node;
+                };
+                this.top = new_node;
+                this.length = this.length + 1;
+            }
+        }
+
+    trait LinkedDrop<t>
+        require top : Maybe LinkedNode<t>
+        require length : int
+
+        def drop(node : LinkedNode<t>) : void {
+            let
+                prev = node.prev : Maybe LinkedNode<t>
+                next = node.next : Maybe LinkedNode<t>
+            in {
+                -- Repointing the next and prev nodes
+                -- to eachother. Removing the given
+                -- node from the chain.
+                (match prev with
+                    Just n => n.next = next
+                    Nothing => ());
+
+                (match next with
+                    Just n => n.prev = prev
+                    Nothing => ());
+
+                -- Repoint top if the node
+                -- to remove is the top-node.
+                (match this.top with
+                    Just n => if n == node then this.top = next
+                    Nothing => ());
+
+                -- TODO: Check if the given
+                -- node actually belongs to the list
+                -- before decrementing this integer!!
+                this.length = this.length - 1;
+            }
+        }
+
+    passive class LinkedList<t> : LinkedPush<t> + LinkedDrop<t>
+        top : Maybe LinkedNode<t>
+        length : int
+
+        def init() : void {
+            this.top = Nothing : Maybe LinkedNode<t>;
+            this.length = 0;
+        }
+
+        def iterator() : LinkedIterator<t> {
+            new LinkedIterator<t>(this)
+        }
+
+        def remove_all(value : t) : void {
+            let
+                remove = new LinkedList<LinkedNode<t>>()
+                iter = this.iterator()
+            in {
+                -- Locate all occurances of 'value' for removal in next step.
+                (while iter.has_next() {
+                    let current = iter.next() in {
+                        match current with
+                            Just node => {
+                                if node.value == value then {
+                                    -- Store current node for removal
+                                    remove.push(node);
+                                }
+                            }
+                    }
+                });
+
+                -- Remove all nodes located in previous iteration.
+                let rem_iter = remove.iterator() in {
+                    while rem_iter.has_next() {
+                        let current = rem_iter.next() in {
+                            match current with
+                                -- Node.value == LinkedNode<t> that is marked for removal
+                                Just node => this.drop(node.value);
+                        }
+                    }
+                }
+            }
+        }
+
+    passive class LinkedIterator<t>
+        list   : LinkedList<t>
+        cursor : Maybe LinkedNode<t>
+
+        def init(list : LinkedList<t>) : void {
+            this.list = list;
+            this.cursor = list.top;
+        }
+
+        def next() : Maybe LinkedNode<t> {
+            let
+                current = this.cursor
+            in {
+                if current == Nothing then {
+                    Nothing
+                } else {
+                    (match this.cursor with
+                        Just node => this.cursor = node.next);
+
+                    -- Return
+                    current
+                }
+            }
+        }
+
+        def has_next() : bool {
+            this.cursor != Nothing
+        }

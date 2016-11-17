@@ -1,4 +1,4 @@
-import Linked_List
+import LinkedList
 
 trait Map<v>
     require size  : uint
