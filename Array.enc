@@ -1,0 +1,27 @@
+bundle Array where
+
+    -- Performs == comparison
+    def contains<t>(arr : [t], to_find : t) : bool {
+        let retval = false;
+        for x in arr {
+            if x == to_find then {
+                retval = true;
+                -- Break iteration
+                embed void break; end
+            }
+        };
+        retval
+    }
+
+    -- Performs string comparison
+    def contains_str(arr : [String], to_find : String) : bool {
+        let retval = false;
+        for x in arr {
+            if x.compare(to_find) == 0 then {
+                retval = true;
+                -- Break iteration
+                embed void break; end
+            }
+        };
+        retval
+    }
