@@ -1,7 +1,7 @@
 import Array
 import Trie
 
-def basic_1() : bool {
+def trie_basic_1() : bool {
     let trie = new Trie() in {
         match trie.root with
             Nothing => true
@@ -12,7 +12,7 @@ def basic_1() : bool {
     }
 }
 
-def add_1() : bool {
+def trie_add_1() : bool {
     let
         str = "foo"
         f = new Char('f')
