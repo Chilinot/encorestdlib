@@ -1,237 +1,238 @@
-import Linked_List
-import Siphash
-import Hasher
-import HashCode
-import Map
-import Iterator
+bundle HashMap where
+    import LinkedList
+    import Siphash
+    import Hasher
+    import HashCode
+    import Map
+    import Iterator
 
-{-
-    Wrapper around key-value pairs for maps.
--}
-passive class Entry<v>
-    key      : HashCode
-    value    : v
-
-    def init(key : HashCode, value : v) : void {
-        this.key = key;
-        this.value = value;
-    }
-
-passive class HashMapIterator<v> : Iterator<Entry<v>>
     {-
-        TODO: Add clone of internal representation of hashmap.
-        This will stop aliasing problems as well as allowing this object
-        free access to the array.
+        Wrapper around key-value pairs for maps.
     -}
-    map           : HashMap<v>
-    current_index : uint
-    current_node  : Maybe LinkedNode<Entry<v>>
+    passive class Entry<v>
+        key      : HashCode
+        value    : v
 
-    def init(map : HashMap<v>) : void {
-        this.map = map;
-
-        -- This has to start at "-1" because
-        -- locate_next() increments the index
-        -- when it is called at the start.
-        this.current_index = -1;
-
-        -- This needs to be set to "Nothing" before calling locate_next()!
-        this.current_node = Nothing;
-        this.current_node = this.locate_next();
-    }
-
-    def locate_next() : Maybe LinkedNode<Entry<v>> {
-        let
-            retval = Nothing : Maybe LinkedNode<Entry<v>>
-
-            {-
-                Retrieves the next linked list in the
-                map and returns the top node of it.
-            -}
-            get_next_top = \() -> {
-                let ret = Nothing : Maybe LinkedNode<Entry<v>> in {
-
-                    this.current_index = this.current_index + 1;
-
-                    (while (this.current_index < this.map.size and
-                           ret == Nothing)
-                    {
-                        let list = this.map.map[this.current_index] in {
-                            if list.length > 0 then {
-                                ret = list.top;
-                            } else {
-                                this.current_index = this.current_index + 1;
-                            };
-                        }
-                    });
-
-                    -- Return
-                    ret
-                }
-            }
-        in {
-            (match this.current_node with
-                Just current => {
-                    match current.next with
-                        Just n => retval = current.next
-                        Nothing => retval = get_next_top()
-                }
-
-                Nothing => retval = get_next_top()
-            );
-
-            -- Return
-            retval
+        def init(key : HashCode, value : v) : void {
+            this.key = key;
+            this.value = value;
         }
-    }
 
-    def next() : Maybe Entry<v> {
-        let current = this.current_node in {
-            if this.has_next() then {
-                this.current_node = this.locate_next();
-            };
+    passive class HashMapIterator<v> : Iterator<Entry<v>>
+        {-
+            TODO: Add clone of internal representation of hashmap.
+            This will stop aliasing problems as well as allowing this object
+            free access to the array.
+        -}
+        map           : HashMap<v>
+        current_index : uint
+        current_node  : Maybe LinkedNode<Entry<v>>
 
-            match current with
-                Just node => Just node.value
-                Nothing   => Nothing
+        def init(map : HashMap<v>) : void {
+            this.map = map;
+
+            -- This has to start at "-1" because
+            -- locate_next() increments the index
+            -- when it is called at the start.
+            this.current_index = -1;
+
+            -- This needs to be set to "Nothing" before calling locate_next()!
+            this.current_node = Nothing;
+            this.current_node = this.locate_next();
         }
-    }
 
-    def has_next() : bool {
-        this.current_node != Nothing
-    }
-
-passive class HashMap<v> : Map<v>
-    size   : uint
-    items  : uint
-    map    : [LinkedList<Entry<v>>]
-
-    def init() : void {
-        this.items = 0;
-
-        -- The initial map can hold this many unique keys.
-        this.size = 32;
-        this.map = new [LinkedList<Entry<v>>](this.size);
-
-        -- Initialize all lists.
-        repeat i <- this.size {
-            this.map[i] = new LinkedList<Entry<v>>();
-        }
-    }
-
-    def remove(key : HashCode) : bool {
-        let
-            hash    = key.get_hash()
-            k       = hash % this.size
-            list    = this.map[k]
-            ret_val = false
-        in {
-            -- Iterate over the list and remove
-            -- any entry with a matching key.
-            let iter = list.iterator() in {
-                while iter.has_next() {
-                    let current = iter.next() in {
-                        -- Extract the contents of the
-                        -- LinkedNode<Entry<k, v>>
-                        match current with
-                            Just node =>
-                                let entry = node.value in {
-                                    if entry.key.equals(key) then {
-                                        -- Remove the item
-                                        list.drop(node);
-                                        this.items = this.items - 1;
-                                        ret_val = true;
-                                    };
-                                }
-                   }
-                }
-            };
-
-            -- Return
-            ret_val
-        }
-    }
-
-    def set(key : HashCode, value : v) : void {
-        let
-            hash  = key.get_hash()
-            entry = new Entry<v>(key, value)
-        in {
-            -- Increase the size of the map if it contains
-            -- about 75% of its capacity of keys.
-            if this.items >= (this.size * 0.75) then {
-                this.resize(this.size * 2);
-            };
-
-            -- Ensure there are no conflicting entries in the map.
-            this.remove(key);
-
+        def locate_next() : Maybe LinkedNode<Entry<v>> {
             let
-                k = hash % this.size
-                list = this.map[k]
-            in {
-                list.push(entry);
-            };
+                retval = Nothing : Maybe LinkedNode<Entry<v>>
 
-            this.items = this.items + 1;
-        }
-    }
+                {-
+                    Retrieves the next linked list in the
+                    map and returns the top node of it.
+                -}
+                get_next_top = \() -> {
+                    let ret = Nothing : Maybe LinkedNode<Entry<v>> in {
 
-    def resize(new_size : uint) : void {
-        let new_map = new [LinkedList<Entry<v>>](new_size) in {
-            -- Initialize all lists.
-            (repeat i <- new_size {
-                new_map[i] = new LinkedList<Entry<v>>();
-            });
+                        this.current_index = this.current_index + 1;
 
-            let iterator = new HashMapIterator<v>(this) in {
-                -- Move all items from the old array to the new.
-                while iterator.has_next() {
-                    let current = iterator.next() in {
-                        match current with
-                            Just entry => {
-                                let
-                                    hash = entry.key.get_hash()
-                                    k    = hash % new_size
-                                    list = new_map[k]
-                                in {
-                                    list.push(entry);
-                                }
-                            }
-                    }
-                };
-            };
-
-            this.map = new_map;
-            this.size = new_size;
-        }
-    }
-
-    def get_value(key : HashCode) : Maybe v {
-        let
-            hash = key.get_hash()
-            k    = hash % this.size
-            list = this.map[k]
-        in {
-            {-
-                Iterate over the list to locate the item.
-            -}
-            let
-                iter = list.iterator()
-                tmp  = Nothing : Maybe v
-            in {
-                while iter.has_next() and tmp == Nothing {
-                    let current = iter.next() in {
-                        match current with
-                            Just entry =>
-                                if entry.value.key.equals(key) then {
-                                    tmp = Just entry.value.value;
+                        (while (this.current_index < this.map.size and
+                               ret == Nothing)
+                        {
+                            let list = this.map.map[this.current_index] in {
+                                if list.length > 0 then {
+                                    ret = list.top;
+                                } else {
+                                    this.current_index = this.current_index + 1;
                                 };
+                            }
+                        });
+
+                        -- Return
+                        ret
+                    }
+                }
+            in {
+                (match this.current_node with
+                    Just current => {
+                        match current.next with
+                            Just n => retval = current.next
+                            Nothing => retval = get_next_top()
+                    }
+
+                    Nothing => retval = get_next_top()
+                );
+
+                -- Return
+                retval
+            }
+        }
+
+        def next() : Maybe Entry<v> {
+            let current = this.current_node in {
+                if this.has_next() then {
+                    this.current_node = this.locate_next();
+                };
+
+                match current with
+                    Just node => Just node.value
+                    Nothing   => Nothing
+            }
+        }
+
+        def has_next() : bool {
+            this.current_node != Nothing
+        }
+
+    passive class HashMap<v> : Map<v>
+        size   : uint
+        items  : uint
+        map    : [LinkedList<Entry<v>>]
+
+        def init() : void {
+            this.items = 0;
+
+            -- The initial map can hold this many unique keys.
+            this.size = 32;
+            this.map = new [LinkedList<Entry<v>>](this.size);
+
+            -- Initialize all lists.
+            repeat i <- this.size {
+                this.map[i] = new LinkedList<Entry<v>>();
+            }
+        }
+
+        def remove(key : HashCode) : bool {
+            let
+                hash    = key.get_hash()
+                k       = hash % this.size
+                list    = this.map[k]
+                ret_val = false
+            in {
+                -- Iterate over the list and remove
+                -- any entry with a matching key.
+                let iter = list.iterator() in {
+                    while iter.has_next() {
+                        let current = iter.next() in {
+                            -- Extract the contents of the
+                            -- LinkedNode<Entry<k, v>>
+                            match current with
+                                Just node =>
+                                    let entry = node.value in {
+                                        if entry.key.equals(key) then {
+                                            -- Remove the item
+                                            list.drop(node);
+                                            this.items = this.items - 1;
+                                            ret_val = true;
+                                        };
+                                    }
+                       }
                     }
                 };
 
                 -- Return
-                tmp
+                ret_val
             }
         }
-    }
+
+        def set(key : HashCode, value : v) : void {
+            let
+                hash  = key.get_hash()
+                entry = new Entry<v>(key, value)
+            in {
+                -- Increase the size of the map if it contains
+                -- about 75% of its capacity of keys.
+                if this.items >= (this.size * 0.75) then {
+                    this.resize(this.size * 2);
+                };
+
+                -- Ensure there are no conflicting entries in the map.
+                this.remove(key);
+
+                let
+                    k = hash % this.size
+                    list = this.map[k]
+                in {
+                    list.push(entry);
+                };
+
+                this.items = this.items + 1;
+            }
+        }
+
+        def resize(new_size : uint) : void {
+            let new_map = new [LinkedList<Entry<v>>](new_size) in {
+                -- Initialize all lists.
+                (repeat i <- new_size {
+                    new_map[i] = new LinkedList<Entry<v>>();
+                });
+
+                let iterator = new HashMapIterator<v>(this) in {
+                    -- Move all items from the old array to the new.
+                    while iterator.has_next() {
+                        let current = iterator.next() in {
+                            match current with
+                                Just entry => {
+                                    let
+                                        hash = entry.key.get_hash()
+                                        k    = hash % new_size
+                                        list = new_map[k]
+                                    in {
+                                        list.push(entry);
+                                    }
+                                }
+                        }
+                    };
+                };
+
+                this.map = new_map;
+                this.size = new_size;
+            }
+        }
+
+        def get_value(key : HashCode) : Maybe v {
+            let
+                hash = key.get_hash()
+                k    = hash % this.size
+                list = this.map[k]
+            in {
+                {-
+                    Iterate over the list to locate the item.
+                -}
+                let
+                    iter = list.iterator()
+                    tmp  = Nothing : Maybe v
+                in {
+                    while iter.has_next() and tmp == Nothing {
+                        let current = iter.next() in {
+                            match current with
+                                Just entry =>
+                                    if entry.value.key.equals(key) then {
+                                        tmp = Just entry.value.value;
+                                    };
+                        }
+                    };
+
+                    -- Return
+                    tmp
+                }
+            }
+        }
