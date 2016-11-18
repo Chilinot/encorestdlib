@@ -1,0 +1,48 @@
+bundle ArrayList where
+    import Data.Either
+
+    passive class ArrayList<t> {
+        arr : [t]
+        next_empty : uint
+
+        def init() : void {
+            -- The initial array contains 32 items
+            -- TODO: Add way to predefine this size
+            this.arr = new [t](32);
+            this.next_empty = 0;
+        }
+
+        def insert(value : t) : void {
+            if this.next_empty >= |this.arr| then {
+                -- Resize the underlying array to twice its current size
+                this.resize(|this.arr| * 2);
+                this.insert(value);
+            } else {
+                this.arr[this.next_empty] = value;
+                this.next_empty = this.next_empty + 1;
+            };
+        }
+
+        def size() : uint {
+            this.next_empty
+        }
+
+        def get_value(index : uint) : Either<String, t> {
+            if index >= this.next_empty then {
+                Left<String, t>("Index out of bounds!")
+            } else {
+                Right<String, t>(this.arr[index])
+            }
+        }
+
+        def resize(new_size : uint) : void {
+            -- Allocate new array
+            let new_arr = new [t](new_size);
+            -- Copy data from old to new
+            repeat i <- |this.arr| {
+                new_arr[i] = this.arr[i];
+            };
+            -- Repoint instance reference
+            this.arr = new_arr;
+        }
+    }

@@ -1,0 +1,37 @@
+import ArrayList
+import Data.Either
+
+def arrlist_basic_1() : bool {
+    let list = new ArrayList<int>();
+    list.insert(12);
+    list.insert(13);
+    list.insert(42);
+
+    match list.get_value(0) with
+        Left(err) => {
+            println("\tget_value(0) failed with message: {}", err);
+            false
+        }
+        Right(x) => x == 12
+    and
+    match list.get_value(1) with
+        Left(err) => {
+            println("\tget_value(1) failed with message: {}", err);
+            false
+        }
+        Right(x) => x == 13
+    and
+    match list.get_value(2) with
+        Left(err) => {
+            println("\tget_value(2) failed with message: {}", err);
+            false
+        }
+        Right(x) => x == 42
+    and
+    match list.get_value(3) with
+        Left(err) => true
+        Right(x) => {
+            println("\tget_value(3) succeded when it should have failed!");
+            false
+        }
+}

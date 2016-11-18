@@ -4,6 +4,7 @@ import LinkedList_tests
 import BST_tests
 import Trie_tests
 import Wrappers_tests
+import ArrayList_tests
 
 class Main {
     def main() : void {
@@ -69,6 +70,11 @@ class Main {
             tests.assert_true("Contains #1", trie_contains_1);
             tests.assert_true("Prefix #1", trie_prefix_1);
             tests.assert_true("Get_Suffixes #1", trie_suffix_1);
+
+            tests.run();
+        };
+        let tests = new TestSuite("ArrayList", 100) in {
+            tests.assert_true("Basic #1", arrlist_basic_1);
 
             tests.run();
         };
