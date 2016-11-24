@@ -22,10 +22,9 @@ passive class TrieNode {
                 character = new Char(arr[index])
                 child = this.child_map.get_value(character)
             in {
-                --match child with
-                --    Just node => node.add(arr, index + 1)
-                --    Nothing => this.child_map.set(character, new TrieNode(arr, index + 1))
-                ();
+                match child with
+                    Just node => node.add(arr, index + 1)
+                    Nothing => this.child_map.set(character, new TrieNode(arr, index + 1))
             }
         };
     }
