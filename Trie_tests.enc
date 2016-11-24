@@ -2,189 +2,189 @@ module Trie_tests
 
 import Array
 import Trie
---
---def trie_basic_1() : bool {
---    let trie = new Trie() in {
---        match trie.root with
---            Nothing => true
---            Just x => {
---                println("\ttrie.root != Nothing!");
---                false
---            }
---    }
---}
---
---def trie_add_1() : bool {
---    let
---        str = "foo"
---        f = new Char('f')
---        o = new Char('o')
---        trie = new Trie()
---    in {
---        trie.add(str);
---
---        match trie.root with
---            Just root => {
---                (match root.word_end with
---                    false => true
---                    true => {
---                        println("\troot.word_end == true!");
---                        false
---                    }
---                ) and
---                (match root.child_map.items with
---                    1 => true
---                    x => {
---                        println("\troot.map.items != 1!");
---                        false
---                    }
---                ) and
---                (match root.child_map.get_value(f) with
---                    Just child_1 => {
---                        (match child_1.word_end with
---                            false => true
---                            true => {
---                                println("\tchild_1.word_end == true!");
---                                false
---                            }
---                        ) and
---                        (match child_1.child_map.items with
---                            1 => true
---                            x => {
---                                println("\tchild_1.map.items != 1!");
---                                false
---                            }
---                        ) and
---                        (match child_1.child_map.get_value(o) with
---                            Just child_2 => {
---                                (match child_2.word_end with
---                                    false => true
---                                    true => {
---                                        println("\tchild_2.word_end == true!");
---                                        false
---                                    }
---                                ) and
---                                (match child_2.child_map.items with
---                                    1 => true
---                                    x => {
---                                        println("\tchild_2.map.items != 1!");
---                                        false
---                                    }
---                                ) and
---                                (match child_2.child_map.get_value(o) with
---                                    Just child_3 => {
---                                        (match child_3.word_end with
---                                            true => true
---                                            false => {
---                                                println("\tchild_3.word_end == false!");
---                                                false
---                                            }
---                                        ) and
---                                        (match child_3.child_map.items with
---                                            0 => true
---                                            x => {
---                                                println("\tchild_3.map.items != 0!");
---                                                false
---                                            }
---                                        )
---                                    }
---                                    Nothing => {
---                                        println("\tchild_2.child_map does not contain child for 'o'!");
---                                        false
---                                    }
---                                )
---                            }
---                            Nothing => {
---                                println("\tchild_1.child_map does not contain child for 'o'!");
---                                false
---                            }
---                        )
---                    }
---                    Nothing => {
---                        println("\troot.child_map does not contain child for 'f'!");
---                        false
---                    }
---                )
---            }
---            Nothing => {
---                println("\ttrie.root == Nothing!");
---                false
---            }
---    }
---}
---
---def trie_contains_1() : bool {
---    let trie = new Trie();
---
---    let tjosan = "tjosan";
---    let foobar = "foobar";
---    let foorab = "foorab";
---    let longword = "averyveryverylongword";
---
---    trie.add(tjosan);
---    trie.add(foobar);
---    trie.add(foorab);
---    trie.add(longword);
---
---    if not trie.contains(tjosan) then {
---        println("\tDoes not contain 'tjosan'!");
---        false
---    } else if not trie.contains(foobar) then {
---        println("\tDoes not contain 'foobar'!");
---        false
---    } else if not trie.contains(foorab) then {
---        println("\tDoes not contain 'foorab'!");
---        false
---    } else if not trie.contains(longword) then {
---        println("\tDoes not contain 'averyveryverylongword'!");
---        false
---    } else if trie.contains("asdf") then {
---        println("\tContains 'asdf' but shouldn't!");
---        false
---    } else {
---        true
---    }
---}
---
---def trie_prefix_1() : bool {
---    let trie = new Trie();
---    trie.add("foobar");
---
---    if not trie.is_prefix("foo") then {
---        println("\t'foo' is not a prefix but should be!");
---        false
---    } else if trie.is_prefix("bar") then {
---        println("\t'bar' is prefix, but shouldn't be.");
---        false
---    } else if trie.is_prefix("foobar") then {
---        println("\t'foobar' is prefix, but shouldn't be.");
---        false
---    } else {
---        true
---    }
---}
---
---def trie_suffix_1() : bool {
---    let trie = new Trie();
---    trie.add("foobar");
---    trie.add("foorab");
---
---    let suffixes = trie.get_suffixes("foo");
---
---    match suffixes with
---        Just arr => {
---            if not contains_str(arr, "bar") then {
---                println("\tsuffix 'bar' not in returned list!");
---                false
---            } else if not contains_str(arr, "rab") then {
---                println("\tsuffix 'rab' not in returned list!");
---                false
---            } else {
---                true
---            }
---        }
---        Nothing => {
---            println("\ttrie.get_suffixes('foo') returned Nothing!");
---            false
---        }
---}
+
+def trie_basic_1() : bool {
+    let trie = new Trie() in {
+        match trie.root with
+            Nothing => true
+            Just x => {
+                println("\ttrie.root != Nothing!");
+                false
+            }
+    }
+}
+
+def trie_add_1() : bool {
+    let
+        str = "foo"
+        f = new Char('f')
+        o = new Char('o')
+        trie = new Trie()
+    in {
+        trie.add(str);
+
+        match trie.root with
+            Just root => {
+                (match root.word_end with
+                    false => true
+                    true => {
+                        println("\troot.word_end == true!");
+                        false
+                    }
+                ) and
+                (match root.child_map.items with
+                    1 => true
+                    x => {
+                        println("\troot.map.items != 1!");
+                        false
+                    }
+                ) and
+                (match root.child_map.get_value(f) with
+                    Just child_1 => {
+                        (match child_1.word_end with
+                            false => true
+                            true => {
+                                println("\tchild_1.word_end == true!");
+                                false
+                            }
+                        ) and
+                        (match child_1.child_map.items with
+                            1 => true
+                            x => {
+                                println("\tchild_1.map.items != 1!");
+                                false
+                            }
+                        ) and
+                        (match child_1.child_map.get_value(o) with
+                            Just child_2 => {
+                                (match child_2.word_end with
+                                    false => true
+                                    true => {
+                                        println("\tchild_2.word_end == true!");
+                                        false
+                                    }
+                                ) and
+                                (match child_2.child_map.items with
+                                    1 => true
+                                    x => {
+                                        println("\tchild_2.map.items != 1!");
+                                        false
+                                    }
+                                ) and
+                                (match child_2.child_map.get_value(o) with
+                                    Just child_3 => {
+                                        (match child_3.word_end with
+                                            true => true
+                                            false => {
+                                                println("\tchild_3.word_end == false!");
+                                                false
+                                            }
+                                        ) and
+                                        (match child_3.child_map.items with
+                                            0 => true
+                                            x => {
+                                                println("\tchild_3.map.items != 0!");
+                                                false
+                                            }
+                                        )
+                                    }
+                                    Nothing => {
+                                        println("\tchild_2.child_map does not contain child for 'o'!");
+                                        false
+                                    }
+                                )
+                            }
+                            Nothing => {
+                                println("\tchild_1.child_map does not contain child for 'o'!");
+                                false
+                            }
+                        )
+                    }
+                    Nothing => {
+                        println("\troot.child_map does not contain child for 'f'!");
+                        false
+                    }
+                )
+            }
+            Nothing => {
+                println("\ttrie.root == Nothing!");
+                false
+            }
+    }
+}
+
+def trie_contains_1() : bool {
+    let trie = new Trie();
+
+    let tjosan = "tjosan";
+    let foobar = "foobar";
+    let foorab = "foorab";
+    let longword = "averyveryverylongword";
+
+    trie.add(tjosan);
+    trie.add(foobar);
+    trie.add(foorab);
+    trie.add(longword);
+
+    if not trie.contains(tjosan) then {
+        println("\tDoes not contain 'tjosan'!");
+        false
+    } else if not trie.contains(foobar) then {
+        println("\tDoes not contain 'foobar'!");
+        false
+    } else if not trie.contains(foorab) then {
+        println("\tDoes not contain 'foorab'!");
+        false
+    } else if not trie.contains(longword) then {
+        println("\tDoes not contain 'averyveryverylongword'!");
+        false
+    } else if trie.contains("asdf") then {
+        println("\tContains 'asdf' but shouldn't!");
+        false
+    } else {
+        true
+    }
+}
+
+def trie_prefix_1() : bool {
+    let trie = new Trie();
+    trie.add("foobar");
+
+    if not trie.is_prefix("foo") then {
+        println("\t'foo' is not a prefix but should be!");
+        false
+    } else if trie.is_prefix("bar") then {
+        println("\t'bar' is prefix, but shouldn't be.");
+        false
+    } else if trie.is_prefix("foobar") then {
+        println("\t'foobar' is prefix, but shouldn't be.");
+        false
+    } else {
+        true
+    }
+}
+
+def trie_suffix_1() : bool {
+    let trie = new Trie();
+    trie.add("foobar");
+    trie.add("foorab");
+
+    let suffixes = trie.get_suffixes("foo");
+
+    match suffixes with
+        Just arr => {
+            if not contains_str(arr, "bar") then {
+                println("\tsuffix 'bar' not in returned list!");
+                false
+            } else if not contains_str(arr, "rab") then {
+                println("\tsuffix 'rab' not in returned list!");
+                false
+            } else {
+                true
+            }
+        }
+        Nothing => {
+            println("\ttrie.get_suffixes('foo') returned Nothing!");
+            false
+        }
+}
