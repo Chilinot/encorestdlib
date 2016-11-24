@@ -1,3 +1,5 @@
+module BST_tests
+
 import BST
 
 def bst_test_add() : bool {

@@ -1,3 +1,5 @@
+module Hasher
+
 trait Hasher
     require hash(id : uint) : uint
 

@@ -1,119 +1,134 @@
-bundle Trie where
-    import Wrappers
-    import HashMap
+module Trie
 
-    passive class TrieNode {
-        child_map : HashMap<TrieNode>
-        word_end : bool -- true if this node marks the end of a word
+import Wrappers
+import HashMap
 
-        def init(arr : [char], index : uint) : void {
-            this.child_map = new HashMap<TrieNode>();
-            this.word_end = false;
-            this.add(arr, index);
-        }
+passive class TrieNode {
+    child_map : HashMap<TrieNode>
+    word_end : bool -- true if this node marks the end of a word
 
-        def add(arr : [char], index : uint) : void {
-            if index >= |arr| then {
-                this.word_end = true;
-            } else {
-                let
-                    character = new Char(arr[index])
-                    child = this.child_map.get_value(character)
-                in {
-                    match child with
-                        Just node => node.add(arr, index + 1)
-                        Nothing => this.child_map.set(character, new TrieNode(arr, index + 1))
-                }
-            };
-        }
-
-        def contains(arr : [char], index : uint) : bool {
-            if index >= |arr| then {
-                -- return
-                this.word_end
-            } else {
-                let
-                    character = new Char(arr[index])
-                    child = this.child_map.get_value(character)
-                in {
-                    match child with
-                        Just node => node.contains(arr, index + 1)
-                        Nothing => false
-                }
-            }
-        }
-
-        def is_prefix(arr : [char], index : uint) : bool {
-            if index >= |arr| then {
-                -- return
-                not this.word_end
-            } else {
-                let
-                    character = new Char(arr[index])
-                    child = this.child_map.get_value(character)
-                in {
-                    match child with
-                        Just node => node.is_prefix(arr, index + 1)
-                        Nothing => false
-                }
-            }
-        }
-
-        def get_suffixes(arr : [char], index : uint) : Maybe [String] {
-            if index >= |arr| then {
-                if not this.word_end then {
-                    let iter = new HashMapIterator<Char>(this.child_map);
-                    while iter.has_next() {
-                        let current = iter.next();
-                        -- TODO: Finish implementation
-                    }
-                } else {
-                    -- return
-                    Nothing
-                }
-            } else {
-                let
-                    character = new Char(arr[index])
-                    child = this.child_map.get_value(character)
-                in {
-                    match child with
-                        Just node => node.get_suffixes(arr, index + 1)
-                        Nothing => Nothing
-                }
-            }
-        }
+    def init(arr : [char], index : uint) : void {
+        this.child_map = new HashMap<TrieNode>();
+        this.word_end = false;
+        this.add(arr, index);
     }
 
-    passive class Trie {
-        root : Maybe TrieNode
-
-        def init() : void {
-            this.root = Nothing;
-        }
-
-        def add(str : String) : void {
-            let arr = str.to_array() in {
-                match this.root with
-                    Just root => root.add(arr, 0)
-                    Nothing => this.root = Just new TrieNode(arr, 0)
+    def add(arr : [char], index : uint) : void {
+        if index >= |arr| then {
+            this.word_end = true;
+        } else {
+            let
+                character = new Char(arr[index])
+                child = this.child_map.get_value(character)
+            in {
+                --match child with
+                --    Just node => node.add(arr, index + 1)
+                --    Nothing => this.child_map.set(character, new TrieNode(arr, index + 1))
+                ();
             }
-        }
-
-        def contains(str : String) : bool {
-            match this.root with
-                Just node => node.contains(str.to_array(), 0)
-                Nothing => false
-        }
-
-        def is_prefix(str : String) : bool {
-            match this.root with
-                Just node => node.is_prefix(str.to_array(), 0)
-                Nothing => false
-        }
-
-        def get_suffixes(str : String) : Maybe [String] {
-            match this.root with
-                Just node => node.get_suffixes(str.to_array(), 0)
-                Nothing => Nothing : Maybe [String]
-        }
+        };
     }
+--
+--    def contains(arr : [char], index : uint) : bool {
+--        if index >= |arr| then {
+--            -- return
+--            this.word_end
+--        } else {
+--            let
+--                character = new Char(arr[index])
+--                child = this.child_map.get_value(character)
+--            in {
+--                match child with
+--                    Just node => node.contains(arr, index + 1)
+--                    Nothing => false
+--            }
+--        }
+--    }
+--
+--    def is_prefix(arr : [char], index : uint) : bool {
+--        if index >= |arr| then {
+--            -- return
+--            not this.word_end
+--        } else {
+--            let
+--                character = new Char(arr[index])
+--                child = this.child_map.get_value(character)
+--            in {
+--                match child with
+--                    Just node => node.is_prefix(arr, index + 1)
+--                    Nothing => false
+--            }
+--        }
+--    }
+--
+--    {-
+--        This is a private method and should not
+--        be used outside of this context.
+--
+--        TODO: Define as private when possible
+--    -}
+--    def construct_suffixes() : [char] {
+--        --TODO: Implement
+--        ['f']
+--    }
+--
+--    def get_suffixes(arr : [char], index : uint) : Maybe [String] {
+--        if index >= |arr| then {
+--            if not this.word_end then {
+--                let iter = new HashMapIterator<TrieNode>(this.child_map);
+--                while iter.has_next() {
+--                    let current = iter.next();
+--                    -- TODO: Finish implementation, use construct_suffixes()
+--                    -- Use an ArrayList to add all suffix-strings to?
+--                    Nothing : Maybe [String]
+--                }
+--            } else {
+--                -- return
+--                Nothing : Maybe [String]
+--            }
+--        } else {
+--            let
+--                character = new Char(arr[index])
+--                child = this.child_map.get_value(character)
+--            in {
+--                match child with
+--                    Just node => node.get_suffixes(arr, index + 1)
+--                    Nothing => Nothing : Maybe [String]
+--            }
+--        }
+--    }
+}
+--
+--passive class Trie {
+--    root : Maybe TrieNode
+--
+--    def init() : void {
+--        this.root = Nothing;
+--    }
+--
+--    def add(str : String) : void {
+--        let arr = str.to_array() in {
+--            match this.root with
+--                Just root => root.add(arr, 0)
+--                Nothing => this.root = Just new TrieNode(arr, 0)
+--        }
+--    }
+--
+--    def contains(str : String) : bool {
+--        match this.root with
+--            Just node => node.contains(str.to_array(), 0)
+--            Nothing => false
+--    }
+--
+--    def is_prefix(str : String) : bool {
+--        match this.root with
+--            Just node => node.is_prefix(str.to_array(), 0)
+--            Nothing => false
+--    }
+--
+--    def get_suffixes(str : String) : Maybe [String] {
+--        match this.root with
+--            Just node => node.get_suffixes(str.to_array(), 0)
+--            Nothing => Nothing : Maybe [String]
+--    }
+--}

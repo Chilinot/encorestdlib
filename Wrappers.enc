@@ -1,35 +1,36 @@
-bundle Wrappers where
-    import HashCode
+module Wrappers
 
-    trait Wrapper<t> {
-        require value : t
-        require get_value() : t
+import HashCode
+
+trait Wrapper<t> {
+    require value : t
+    require get_value() : t
+}
+
+passive class Int : Wrapper<int> + HashCode {
+    value : int
+    hash_code : uint
+
+    def init(value : int) : void {
+        this.value = value;
+        this.hash_code = embed uint (uint64_t) #{value}; end;
     }
 
-    passive class Int : Wrapper<int> + HashCode {
-        value : int
-        hash_code : uint
+    def get_value() : int {
+        this.value
+    }
+}
 
-        def init(value : int) : void {
-            this.value = value;
-            this.hash_code = embed uint (uint64_t) #{value}; end;
-        }
+passive class Char : Wrapper<char> + HashCode {
+    value : char
+    hash_code : uint
 
-        def get_value() : int {
-            this.value
-        }
+    def init(value : char) : void {
+        this.value = value;
+        this.hash_code = embed uint (uint64_t) #{value}; end;
     }
 
-    passive class Char : Wrapper<char> + HashCode {
-        value : char
-        hash_code : uint
-
-        def init(value : char) : void {
-            this.value = value;
-            this.hash_code = embed uint (uint64_t) #{value}; end;
-        }
-
-        def get_value() : char {
-            this.value
-        }
+    def get_value() : char {
+        this.value
     }
+}

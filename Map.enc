@@ -1,3 +1,6 @@
+module Map
+
+import HashCode
 import LinkedList
 
 trait Map<v>

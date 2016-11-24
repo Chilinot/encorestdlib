@@ -1,3 +1,5 @@
+module HashCode
+
 import Siphash -- To obfuscate the memory adress.
 
 embed

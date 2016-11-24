@@ -3,80 +3,81 @@ import HashMap_tests
 import LinkedList_tests
 import BST_tests
 import Trie_tests
-import Wrappers_tests
-import ArrayList_tests
+--import Wrappers_tests
+--import ArrayList_tests
 
 class Main {
     def main() : void {
-        let tests = new TestSuite("LinkedList", 100) in {
-            tests.assert_true("init", create);
-            tests.assert_true("push one int", push_one);
-            tests.assert_true("push two ints", push_two);
-            tests.assert_true("push three ints", push_three);
-            tests.assert_true("push three ints and remove middle", push_three_and_remove_middle);
-            tests.assert_true("length #1", length_1);
-            tests.assert_true("length #2", length_2);
-            tests.assert_true("remove_all #1", remove_all_1);
-
-            tests.run();
-        };
-        let tests = new TestSuite("HashMap", 100) in {
-            tests.assert_true("set and get", set_and_get);
-            tests.assert_true("items and size #1", items_and_size_1);
-            tests.assert_true("items and size #2", items_and_size_2);
-            tests.assert_true("remove #1", remove_1);
-            tests.assert_true("remove #2", remove_2);
-
-            tests.assert_false("dual remove", dual_remove);
-
-            tests.assert_int("items #1", items_1, 1);
-            tests.assert_int("items #2", items_2, 2);
-            tests.assert_int("items #3", items_3, 2);
-            tests.assert_int("items #4", items_4, 9);
-
-            tests.assert_int("size #1", size_1, 32);
-
-            tests.assert_true("iterator #1", iterator_test_1);
-            tests.assert_true("iterator #2", iterator_test_2);
-
-            tests.assert_true("resize #1", resize_1);
-
-            tests.run();
-        };
-        let tests = new TestSuite("BST", 100) in {
-            tests.assert_true("Add", bst_test_add);
-            tests.assert_true("Add advanced", bst_test_add_adv);
-            tests.assert_true("Add Subtree #1", bst_add_subtree_1);
-            tests.assert_true("Pop leftmost #1", bst_pop_leftmost_1);
-            tests.assert_true("Pop leftmost #2", bst_pop_leftmost_2);
-            tests.assert_true("Remove #1", bst_remove_1);
-            tests.assert_true("Remove #2", bst_remove_2);
-            tests.assert_true("Remove root", bst_remove_root);
-            tests.assert_true("Remove leaf #1", bst_remove_leaf_1);
-            tests.assert_true("Remove leaf #2", bst_remove_leaf_2);
-            tests.assert_true("Get_value #1", bst_get_value_1);
-
-            tests.run();
-        };
-        let tests = new TestSuite("Wrappers", 100) in {
-            tests.assert_true("Integer #1", int_1);
-            tests.assert_true("Character #1", char_1);
-
-            tests.run();
-        };
-        let tests = new TestSuite("Trie", 100) in {
-            tests.assert_true("Basic #1", trie_basic_1);
-            tests.assert_true("Add #1", trie_add_1);
-            tests.assert_true("Contains #1", trie_contains_1);
-            tests.assert_true("Prefix #1", trie_prefix_1);
-            tests.assert_true("Get_Suffixes #1", trie_suffix_1);
-
-            tests.run();
-        };
-        let tests = new TestSuite("ArrayList", 100) in {
-            tests.assert_true("Basic #1", arrlist_basic_1);
-
-            tests.run();
-        };
+--        let tests = new TestSuite("LinkedList", 100) in {
+--            tests.assert_true("init", create);
+--            tests.assert_true("push one int", push_one);
+--            tests.assert_true("push two ints", push_two);
+--            tests.assert_true("push three ints", push_three);
+--            tests.assert_true("push three ints and remove middle", push_three_and_remove_middle);
+--            tests.assert_true("length #1", length_1);
+--            tests.assert_true("length #2", length_2);
+--            tests.assert_true("remove_all #1", remove_all_1);
+--
+--            tests.run();
+--        };
+--        let tests = new TestSuite("HashMap", 100) in {
+--            tests.assert_true("set and get", set_and_get);
+--            tests.assert_true("items and size #1", items_and_size_1);
+--            tests.assert_true("items and size #2", items_and_size_2);
+--            tests.assert_true("remove #1", remove_1);
+--            tests.assert_true("remove #2", remove_2);
+--
+--            tests.assert_false("dual remove", dual_remove);
+--
+--            tests.assert_int("items #1", items_1, 1);
+--            tests.assert_int("items #2", items_2, 2);
+--            tests.assert_int("items #3", items_3, 2);
+--            tests.assert_int("items #4", items_4, 9);
+--
+--            tests.assert_int("size #1", size_1, 32);
+--
+--            tests.assert_true("iterator #1", iterator_test_1);
+--            tests.assert_true("iterator #2", iterator_test_2);
+--
+--            tests.assert_true("resize #1", resize_1);
+--
+--            tests.run();
+--        };
+--        let tests = new TestSuite("BST", 100) in {
+--            tests.assert_true("Add", bst_test_add);
+--            tests.assert_true("Add advanced", bst_test_add_adv);
+--            tests.assert_true("Add Subtree #1", bst_add_subtree_1);
+--            tests.assert_true("Pop leftmost #1", bst_pop_leftmost_1);
+--            tests.assert_true("Pop leftmost #2", bst_pop_leftmost_2);
+--            tests.assert_true("Remove #1", bst_remove_1);
+--            tests.assert_true("Remove #2", bst_remove_2);
+--            tests.assert_true("Remove root", bst_remove_root);
+--            tests.assert_true("Remove leaf #1", bst_remove_leaf_1);
+--            tests.assert_true("Remove leaf #2", bst_remove_leaf_2);
+--            tests.assert_true("Get_value #1", bst_get_value_1);
+--
+--            tests.run();
+--        };
+--        let tests = new TestSuite("Wrappers", 100) in {
+--            tests.assert_true("Integer #1", int_1);
+--            tests.assert_true("Character #1", char_1);
+--
+--            tests.run();
+--        };
+--        let tests = new TestSuite("Trie", 100) in {
+--            tests.assert_true("Basic #1", trie_basic_1);
+--            tests.assert_true("Add #1", trie_add_1);
+--            tests.assert_true("Contains #1", trie_contains_1);
+--            tests.assert_true("Prefix #1", trie_prefix_1);
+--            tests.assert_true("Get_Suffixes #1", trie_suffix_1);
+--
+--            tests.run();
+--        };
+--        let tests = new TestSuite("ArrayList", 100) in {
+--            tests.assert_true("Basic #1", arrlist_basic_1);
+--
+--            tests.run();
+--        };
+        ();
     }
 }

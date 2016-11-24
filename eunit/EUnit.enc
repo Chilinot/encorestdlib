@@ -1,4 +1,4 @@
-bundle EUnit where
+module EUnit
 
     def test_optional<a>(message : String, option : Maybe a, expected : a) : bool {
         match option with

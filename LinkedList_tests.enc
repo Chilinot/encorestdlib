@@ -1,3 +1,5 @@
+module LinkedList_tests
+
 import LinkedList
 
 def create() : bool {

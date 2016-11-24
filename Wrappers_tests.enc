@@ -1,3 +1,5 @@
+module Wrappers_tests
+
 import Wrappers
 
 def int_1() : bool {

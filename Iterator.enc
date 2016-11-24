@@ -1,3 +1,5 @@
+module Iterator
+
 trait Iterator<t>
     require next() : Maybe t
     require has_next() : bool

@@ -1,3 +1,5 @@
+module ArrayList_tests
+
 import ArrayList
 import Data.Either
 

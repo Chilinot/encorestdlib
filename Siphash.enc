@@ -17,6 +17,7 @@
 
     TODO: Add support for big endian.
 -}
+module Siphash
 
 import Hasher -- Hasher trait
 

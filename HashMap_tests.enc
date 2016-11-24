@@ -1,3 +1,5 @@
+module HashMap_tests
+
 import HashMap
 import HashCode
 import Wrappers
