@@ -2,6 +2,8 @@ module Trie_tests
 
 import Array
 import Trie
+import Wrappers
+import HashMap
 
 def trie_basic_1() : bool {
     let trie = new Trie() in {
