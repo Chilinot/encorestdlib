@@ -75,9 +75,9 @@ passive class TrieNode {
     def get_suffixes(arr : [char], index : uint) : Maybe [String] {
         if index >= |arr| then {
             if not this.word_end then {
-                let iter = new HashMapIterator<TrieNode>(this.child_map);
+                val iter = new HashMapIterator<TrieNode>(this.child_map);
                 while iter.has_next() {
-                    let current = iter.next();
+                    val current = iter.next();
                     -- TODO: Finish implementation, use construct_suffixes()
                     -- Use an ArrayList to add all suffix-strings to?
                     Nothing : Maybe [String]

@@ -42,98 +42,94 @@ passive class BSTree<a,b> {
     -}
     def add_subtree(node : BSTNode<a, b>, subtree : Maybe BSTNode<a, b>, comp_f : BSTCompFunc<a>) : void {
         if subtree != Nothing then {
-            let
-                current = Just node
-                iterate = true
-                sub_key = (match subtree with Just sub => sub.key)
-            in {
-                while iterate {
-                    match current with
-                        Just n => {
-                            match comp_f(sub_key, n.key) with
-                                -- Left
-                                x when x == -1 or x == 0 => {
-                                    match n.left with
-                                        Just left => {
-                                            current = n.left;
-                                        }
-                                        Nothing => {
-                                            n.left = subtree;
-                                            iterate = false;
-                                        }
-                                }
-                                -- Right
-                                1 => {
-                                    match n.right with
-                                        Just right => {
-                                            current = n.right;
-                                        }
-                                        Nothing => {
-                                            n.right = subtree;
-                                            iterate = false;
-                                        }
-                                }
-                                -- ERROR
-                                _ => {
-                                    print("ERROR - BST.add_subtree: comp_f returned unexpected value!!");
-                                    iterate = false;
-                                }
-                        }
-                        Nothing => {
-                            print("BST.add_subtree: Something went wrong!");
-                            iterate = false;
-                        }
-                };
-            }
+            var current = Just node;
+            var iterate = true;
+            val sub_key = (match subtree with Just sub => sub.key);
+
+            while iterate {
+                match current with
+                    Just n => {
+                        match comp_f(sub_key, n.key) with
+                            -- Left
+                            x when x == -1 or x == 0 => {
+                                match n.left with
+                                    Just left => {
+                                        current = n.left;
+                                    }
+                                    Nothing => {
+                                        n.left = subtree;
+                                        iterate = false;
+                                    }
+                            }
+                            -- Right
+                            1 => {
+                                match n.right with
+                                    Just right => {
+                                        current = n.right;
+                                    }
+                                    Nothing => {
+                                        n.right = subtree;
+                                        iterate = false;
+                                    }
+                            }
+                            -- ERROR
+                            _ => {
+                                print("ERROR - BST.add_subtree: comp_f returned unexpected value!!");
+                                iterate = false;
+                            }
+                    }
+                    Nothing => {
+                        print("BST.add_subtree: Something went wrong!");
+                        iterate = false;
+                    }
+            };
         }
     }
 
     def add(key : a, value : b, comp_f : BSTCompFunc<a>) : bool {
-        let
-            current  = this.root
-            new_node = Just new BSTNode<a, b>(key, value)
-            iterate  = true
-            retval   = true
-        in {
-            while iterate {
-                match current with
-                    Just node => {
-                        match comp_f(key, node.key) with
-                            -- Left
-                            x when x == -1 or x == 0 => {
-                                if node.left != Nothing then {
-                                    current = node.left;
-                                } else {
-                                    node.left = new_node;
-                                    iterate = false;
-                                };
-                            }
-                            -- Right
-                            1 => {
-                                if node.right != Nothing then {
-                                    current = node.right;
-                                } else {
-                                    node.right = new_node;
-                                    iterate = false;
-                                };
-                            }
-                            -- Error!
-                            _ => {
-                                --print("SEVERE ERROR! BSTAdd.add: comp_f returned integer other than -1, 0 or 1!");
-                                iterate = false;
-                                retval = false;
-                            }
-                    }
-                    Nothing => {
-                        -- This should only be reached if the root is "Nothing".
-                        this.root = new_node;
-                        iterate = false;
-                    }
-            };
+        val new_node = Just new BSTNode<a, b>(key, value);
+        var current  = this.root;
+        var iterate  = true;
+        var retval   = true;
 
-            -- Return
-            retval
-        }
+        while iterate {
+            match current with
+                Just node => {
+                    match comp_f(key, node.key) with
+                        -- Left
+                        x when x == -1 or x == 0 => {
+                            if node.left != Nothing then {
+                                current = node.left;
+                            } else {
+                                node.left = new_node;
+                                iterate = false;
+                            };
+                        }
+                        -- Right
+                        1 => {
+                            if node.right != Nothing then {
+                                current = node.right;
+                            } else {
+                                node.right = new_node;
+                                iterate = false;
+                            };
+                        }
+                        -- Error!
+                        _ => {
+                            --print("SEVERE ERROR! BSTAdd.add: comp_f returned integer other than -1, 0 or 1!");
+                            iterate = false;
+                            retval = false;
+                        }
+                }
+                Nothing => {
+                    -- This should only be reached if the root is "Nothing".
+                    this.root = new_node;
+                    iterate = false;
+                }
+        };
+
+        -- Return
+        retval
     }
 
     {-!
@@ -152,44 +148,42 @@ passive class BSTree<a,b> {
         @return (Maybe (a, b), bool)
     --}
     def pop_leftmost(root : Maybe BSTNode<a, b>) : (Maybe (a,b), bool) {
+        var prev    = Nothing : Maybe BSTNode<a,b>;
+        var cursor  = root;
+        var iterate = true;
+        var retval  = (Nothing : Maybe (a,b), false);
+
         if root != Nothing then {
-            let
-                prev    = Nothing : Maybe BSTNode<a,b>
-                cursor  = root
-                iterate = true
-                retval  = (Nothing : Maybe (a,b), false)
-            in {
-                while iterate {
-                    match cursor with
-                        Just current => {
-                            match current.left with
-                                Just left => {
-                                    prev = cursor;
-                                    cursor = current.left;
-                                }
-                                Nothing => {
-                                    -- Remove the current node from the tree and return its value.
-                                    let drop_this = false;
+            while iterate {
+                match cursor with
+                    Just current => {
+                        match current.left with
+                            Just left => {
+                                prev = cursor;
+                                cursor = current.left;
+                            }
+                            Nothing => {
+                                -- Remove the current node from the tree and return its value.
+                                var drop_this = false;
 
-                                    (match prev with
-                                        Just p => p.left = current.right
-                                        Nothing => drop_this = true
-                                    );
+                                (match prev with
+                                    Just p => p.left = current.right
+                                    Nothing => drop_this = true
+                                );
 
-                                    retval = (Just (current.key, current.value), drop_this);
-                                    iterate = false;
-                                }
-                        }
-                        Nothing => {
-                            -- Not good, we should not be in this branch!
-                            --TODO: Throw error (when errors have been added)
-                            iterate = false;
-                        }
-                };
+                                retval = (Just (current.key, current.value), drop_this);
+                                iterate = false;
+                            }
+                    }
+                    Nothing => {
+                        -- Not good, we should not be in this branch!
+                        --TODO: Throw error (when errors have been added)
+                        iterate = false;
+                    }
+            };
 
-                -- Return
-                retval
-            }
+            -- Return
+            retval
         } else {
             -- if root == Nothing
             (Nothing, false)
@@ -204,117 +198,113 @@ passive class BSTree<a,b> {
                 The returned string contains error information.
     --}
     def remove(key : a, comp_f : BSTCompFunc<a>) : Maybe String {
-        let
-            iterate = true
-            prev    = Nothing : Maybe BSTNode<a, b>
-            cursor  = this.root
-            retval  = Nothing : Maybe String
-        in {
-            while iterate {
-                match cursor with
-                    Just current => {
-                        match comp_f(key, current.key) with
-                            -- Matching
-                            0 => {
-                                (match this.pop_leftmost(current.right) with
-                                    (Just (k,v), drop_child) => {
-                                        current.key   = k;
-                                        current.value = v;
-                                        if drop_child then {
-                                            current.right = Nothing;
+        var iterate = true;
+        var prev    = Nothing : Maybe BSTNode<a, b>;
+        var cursor  = this.root;
+        var retval  = Nothing : Maybe String;
+
+        while iterate {
+            match cursor with
+                Just current => {
+                    match comp_f(key, current.key) with
+                        -- Matching
+                        0 => {
+                            (match this.pop_leftmost(current.right) with
+                                (Just (k,v), drop_child) => {
+                                    current.key   = k;
+                                    current.value = v;
+                                    if drop_child then {
+                                        current.right = Nothing;
+                                    }
+                                }
+                                --This node does not have a right-subtree!
+                                (Nothing, false) => {
+                                    match prev with
+                                        Just p => {
+                                            -- Set prev.<ref to current> = current.left
+                                            match comp_f(current.key, p.key) with
+                                                left when left == -1 or left == 0 => p.left = current.left
+                                                right when right == 1 => p.right = current.left
                                         }
-                                    }
-                                    --This node does not have a right-subtree!
-                                    (Nothing, false) => {
-                                        match prev with
-                                            Just p => {
-                                                -- Set prev.<ref to current> = current.left
-                                                match comp_f(current.key, p.key) with
-                                                    left when left == -1 or left == 0 => p.left = current.left
-                                                    right when right == 1 => p.right = current.left
-                                            }
-                                            Nothing => this.root = current.left
-                                    }
-                                );
+                                        Nothing => this.root = current.left
+                                }
+                            );
 
-                                iterate = false;
-                            }
-                            -- Left
-                            (-1) => {
-                                match current.left with
-                                    Just left => {
-                                        prev = cursor;
-                                        cursor = current.left;
-                                    }
-                                    Nothing => {
-                                        retval = Just "Could not locate given value in tree!";
-                                        iterate = false;
-                                    }
-                            }
-                            -- Right
-                            1 => {
-                                match current.right with
-                                    Just right => {
-                                        prev = cursor;
-                                        cursor = current.right;
-                                    }
-                                    Nothing => {
-                                        retval = Just "Could not locate given value in tree!";
-                                        iterate = false;
-                                    }
-                            }
-                            -- Error!
-                            x => {
-                                retval = Just "Compare function returned unexpected value! Value has to be either of {-1,0,1}!";
-                                iterate = false;
-                            }
-                    }
-                    Nothing => {
-                        retval = Just "Could not locate the value in the tree.";
-                        iterate = false;
-                    }
-            };
+                            iterate = false;
+                        }
+                        -- Left
+                        (-1) => {
+                            match current.left with
+                                Just left => {
+                                    prev = cursor;
+                                    cursor = current.left;
+                                }
+                                Nothing => {
+                                    retval = Just "Could not locate given value in tree!";
+                                    iterate = false;
+                                }
+                        }
+                        -- Right
+                        1 => {
+                            match current.right with
+                                Just right => {
+                                    prev = cursor;
+                                    cursor = current.right;
+                                }
+                                Nothing => {
+                                    retval = Just "Could not locate given value in tree!";
+                                    iterate = false;
+                                }
+                        }
+                        -- Error!
+                        x => {
+                            retval = Just "Compare function returned unexpected value! Value has to be either of {-1,0,1}!";
+                            iterate = false;
+                        }
+                }
+                Nothing => {
+                    retval = Just "Could not locate the value in the tree.";
+                    iterate = false;
+                }
+        };
 
-            -- Return
-            retval
-        }
+        -- Return
+        retval
     }
 
     def get_value(key : a, comp_f : BSTCompFunc<a>) : Maybe b {
-        let
-            iterate = true
-            cursor  = this.root
-            retval  = Nothing : Maybe b
-        in {
-            while iterate {
-                match cursor with
-                    Just current => {
-                        match comp_f(key, current.key) with
-                            -- Matching
-                            0 => {
-                                retval = Just current.value;
-                                iterate = false;
-                            }
-                            -- Left
-                            (-1) => {
-                                match current.left with
-                                    Just left => cursor = current.left
-                                    Nothing => iterate = false
-                            }
-                            -- Right
-                            1 => {
-                                match current.right with
-                                    Just right => cursor = current.right
-                                    Nothing => iterate = false
-                            }
-                            -- Error!
-                            x => iterate = false
-                    }
-                    Nothing => iterate = false
-            };
+        var iterate = true;
+        var cursor  = this.root;
+        var retval  = Nothing : Maybe b;
 
-            -- Return
-            retval
-        }
+        while iterate {
+            match cursor with
+                Just current => {
+                    match comp_f(key, current.key) with
+                        -- Matching
+                        0 => {
+                            retval = Just current.value;
+                            iterate = false;
+                        }
+                        -- Left
+                        (-1) => {
+                            match current.left with
+                                Just left => cursor = current.left
+                                Nothing => iterate = false
+                        }
+                        -- Right
+                        1 => {
+                            match current.right with
+                                Just right => cursor = current.right
+                                Nothing => iterate = false
+                        }
+                        -- Error!
+                        x => iterate = false
+                }
+                Nothing => iterate = false
+        };
+
+        -- Return
+        retval
     }
 }

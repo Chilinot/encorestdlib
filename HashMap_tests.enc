@@ -51,16 +51,14 @@ def remove_1() : bool {
     let
         map = new HashMap<int>
         foo = new Foo()
-        ret = true
     in {
         map.set(foo, 12);
 
         map.remove(foo);
-        (match map.get_value(foo) with
-            Nothing => ret = ret and true
-            _       => ret = false);
 
-        ret
+        match map.get_value(foo) with
+            Nothing => true
+            _       => false
     }
 }
 def remove_2() : bool {
@@ -68,12 +66,13 @@ def remove_2() : bool {
         map = new HashMap<int>
         foo = new Foo()
         bar = new Foo()
-        ret = true
     in {
         map.set(foo, 12);
         map.set(bar, 42);
 
         map.remove(foo);
+
+        var ret = true;
 
         (match map.get_value(foo) with
             Nothing => ret = ret and true
@@ -192,56 +191,53 @@ def size_1() : int {
 }
 def iterator_test_1() : bool {
     let
-        ret = false
         map = new HashMap<int>()
         foo = new Foo()
     in {
         map.set(foo, 12);
-        let
-            iter = new HashMapIterator<int>(map)
-        in {
-            ret = (
-                (match iter.has_next() with
-                    true  => true
-                    false => {
-                        print("\tCheck #1: iter.has_next() returned false!");
-                        false
-                    }
-                ) and (match iter.next() with
-                    Just entry => entry.key == foo and entry.value == 12
-                    Nothing    => {
-                        print("\tCheck #2: iter.next() returned \"Nothing\".");
-                        false
-                    }
+        val iter = new HashMapIterator<int>(map);
 
-                -- All of the below checks should get "Nothing" or "false"!
-                ) and (match iter.has_next() with
-                    false => true
-                    true  => {
-                        print("\tCheck #3: iter.has_next() returned true!");
-                        false
-                    }
-                ) and (match iter.next() with
-                    Nothing => true
-                    Just e  => {
-                        print("\tCheck #4: iter.next() returned \"Just ...\".");
-                        false
-                    }
-                ) and (match iter.has_next() with
-                    false => true
-                    true  => {
-                        print("\tCheck #5: iter.has_next() returned true!");
-                        false
-                    }
-                ) and (match iter.next() with
-                    Nothing => true
-                    Just e  => {
-                        print("\tCheck #6: iter.next() returned \"Just ...\".");
-                        false
-                    }
-                )
-            );
-        };
+        var ret = (
+            (match iter.has_next() with
+                true  => true
+                false => {
+                    print("\tCheck #1: iter.has_next() returned false!");
+                    false
+                }
+            ) and (match iter.next() with
+                Just entry => entry.key == foo and entry.value == 12
+                Nothing    => {
+                    print("\tCheck #2: iter.next() returned \"Nothing\".");
+                    false
+                }
+
+            -- All of the below checks should get "Nothing" or "false"!
+            ) and (match iter.has_next() with
+                false => true
+                true  => {
+                    print("\tCheck #3: iter.has_next() returned true!");
+                    false
+                }
+            ) and (match iter.next() with
+                Nothing => true
+                Just e  => {
+                    print("\tCheck #4: iter.next() returned \"Just ...\".");
+                    false
+                }
+            ) and (match iter.has_next() with
+                false => true
+                true  => {
+                    print("\tCheck #5: iter.has_next() returned true!");
+                    false
+                }
+            ) and (match iter.next() with
+                Nothing => true
+                Just e  => {
+                    print("\tCheck #6: iter.next() returned \"Just ...\".");
+                    false
+                }
+            )
+        );
 
         -- Return
         ret
@@ -249,64 +245,62 @@ def iterator_test_1() : bool {
 }
 def iterator_test_2() : bool {
     let
-        ret = false
         map = new HashMap<int>()
         foo = new Foo()
         bar = new Foo()
     in {
         map.set(foo, 12);
         map.set(bar, 43);
-        let
-            iter = new HashMapIterator<int>(map)
-        in {
-            ret = (
-                (match iter.has_next() with
-                    true  => true
-                    false => {
-                        print("\tCheck #1: iter.has_next() returned false!");
-                        false
-                    }
-                ) and (match iter.next() with
-                    Just entry => {
-                        (entry.key == foo and entry.value == 12) or
-                        (entry.key == bar and entry.value == 43)
-                    }
-                    Nothing    => {
-                        print("\tCheck #2: iter.next() returned \"Nothing\".");
-                        false
-                    }
-                ) and (match iter.has_next() with
-                    true  => true
-                    false => {
-                        print("\tCheck #3: iter.has_next() returned false!");
-                        false
-                    }
-                ) and (match iter.next() with
-                    Just entry => {
-                        (entry.key == foo and entry.value == 12) or
-                        (entry.key == bar and entry.value == 43)
-                    }
-                    Nothing    => {
-                        print("\tCheck #4: iter.next() returned \"Nothing\".");
-                        false
-                    }
 
-                -- These should get "false" and "Nothing".
-                ) and (match iter.has_next() with
-                    false => true
-                    true  => {
-                        print("\tCheck #5: iter.has_next() returned true!");
-                        false
-                    }
-                ) and (match iter.next() with
-                    Nothing => true
-                    Just e  => {
-                        print("\tCheck #6: iter.next() returned \"Just ...\".");
-                        false
-                    }
-                )
-            );
-        };
+        val iter = new HashMapIterator<int>(map);
+
+        val ret = (
+            (match iter.has_next() with
+                true  => true
+                false => {
+                    print("\tCheck #1: iter.has_next() returned false!");
+                    false
+                }
+            ) and (match iter.next() with
+                Just entry => {
+                    (entry.key == foo and entry.value == 12) or
+                    (entry.key == bar and entry.value == 43)
+                }
+                Nothing    => {
+                    print("\tCheck #2: iter.next() returned \"Nothing\".");
+                    false
+                }
+            ) and (match iter.has_next() with
+                true  => true
+                false => {
+                    print("\tCheck #3: iter.has_next() returned false!");
+                    false
+                }
+            ) and (match iter.next() with
+                Just entry => {
+                    (entry.key == foo and entry.value == 12) or
+                    (entry.key == bar and entry.value == 43)
+                }
+                Nothing    => {
+                    print("\tCheck #4: iter.next() returned \"Nothing\".");
+                    false
+                }
+
+            -- These should get "false" and "Nothing".
+            ) and (match iter.has_next() with
+                false => true
+                true  => {
+                    print("\tCheck #5: iter.has_next() returned true!");
+                    false
+                }
+            ) and (match iter.next() with
+                Nothing => true
+                Just e  => {
+                    print("\tCheck #6: iter.next() returned \"Just ...\".");
+                    false
+                }
+            )
+        );
 
         -- Return
         ret
@@ -321,7 +315,6 @@ def resize_1() : bool {
     let
         map = new HashMap<int>()
         old_internal_map = map.map
-        retval = false
         f0  = new Foo()
         f1  = new Foo()
         f2  = new Foo()
@@ -374,6 +367,8 @@ def resize_1() : bool {
         map.set(f21, 21);
         map.set(f22, 22);
         map.set(f23, 23);
+
+        var retval = false;
 
         -- Ensure the map has not resized itself.
         retval = (

@@ -38,7 +38,7 @@ passive class ArrayList<t> {
 
     def resize(new_size : uint) : void {
         -- Allocate new array
-        let new_arr = new [t](new_size);
+        val new_arr = new [t](new_size);
         -- Copy data from old to new
         repeat i <- |this.arr| {
             new_arr[i] = this.arr[i];

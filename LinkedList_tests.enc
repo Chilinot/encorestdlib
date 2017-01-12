@@ -48,115 +48,111 @@ def push_two() : bool {
     }
 }
 def push_three() : bool {
-    let
-        list = new LinkedList<int>
-        success = true
-    in {
-        list.push(42);
-        list.push(1337);
-        list.push(420);
+    val list = new LinkedList<int>;
+    var success = true;
 
-        success = success and (
-            match list.top with
-                Just first => first.value == 420
-                _          => false
-        );
+    list.push(42);
+    list.push(1337);
+    list.push(420);
 
-        success = success and (
-            match list.top with
-                Just first => (
-                    match first.next with
-                        Just second => second.value == 1337
-                        _           => false
-                )
-                _ => false
-        );
+    success = success and (
+        match list.top with
+            Just first => first.value == 420
+            _          => false
+    );
 
-        {-
-            This clusterfuck of code block
-            test to make sure that all references
-            in the doubly-linked list points to the
-            right locations. I'm truly sorry for how
-            utterly unreadable it is.
-        -}
-        success = success and (
-            match list.top with
-                Just first => (
-                    match first.next with
-                        Just second => (
-                            match second.next with
-                                Just third => (
-                                    third.value == 42 and
-                                    third.prev != Nothing and
-                                    third.next == Nothing and
-
-                                    (match third.prev with
-                                        Just n => n == second
-                                        _ => false) and
-
-                                    (match second.prev with
-                                        Just n => n == first
-                                        _ => false) and
-
-                                    first.prev == Nothing
-                                )
-                                _ => false
-                        )
-                        _ => false
-                )
-                _ => false
-        );
-
-        -- return
-        success
-    }
-}
-def push_three_and_remove_middle() : bool {
-    let
-        list = new LinkedList<int>
-        middle = null : LinkedNode<int>
-        success = true
-    in {
-        list.push(42);
-        list.push(1337);
-        list.push(420);
-
-        -- Retrieve the middle node.
-        (match list.top with
+    success = success and (
+        match list.top with
             Just first => (
                 match first.next with
-                    Just second => middle = second
-                    _ => success = false
+                    Just second => second.value == 1337
+                    _           => false
             )
-            _ => success = false
-        );
+            _ => false
+    );
 
-        -- Remove the middle node.
-        if middle != null then {
-            list.drop(middle);
-        };
+    {-
+        This clusterfuck of code block
+        test to make sure that all references
+        in the doubly-linked list points to the
+        right locations. I'm truly sorry for how
+        utterly unreadable it is.
+    -}
+    success = success and (
+        match list.top with
+            Just first => (
+                match first.next with
+                    Just second => (
+                        match second.next with
+                            Just third => (
+                                third.value == 42 and
+                                third.prev != Nothing and
+                                third.next == Nothing and
 
-        -- Ensure that it is no longer there
-        -- and that the correct node was removed.
-        success = success and (
-            match list.top with
-                Just first => (
-                    (match first.next with
-                        Just second => (
-                            (match second.next with
-                                Nothing => true
-                                _       => false) and
-                            second.value == 42
-                        )
-                        _ => false) and
-                    first.value == 420
-                )
-                _ => false
-        );
+                                (match third.prev with
+                                    Just n => n == second
+                                    _ => false) and
 
-        -- Return
-        success
-    }
+                                (match second.prev with
+                                    Just n => n == first
+                                    _ => false) and
+
+                                first.prev == Nothing
+                            )
+                            _ => false
+                    )
+                    _ => false
+            )
+            _ => false
+    );
+
+    -- return
+    success
+}
+def push_three_and_remove_middle() : bool {
+    val list = new LinkedList<int>;
+    var middle = null : LinkedNode<int>;
+    var success = true;
+
+    list.push(42);
+    list.push(1337);
+    list.push(420);
+
+    -- Retrieve the middle node.
+    (match list.top with
+        Just first => (
+            match first.next with
+                Just second => middle = second
+                _ => success = false
+        )
+        _ => success = false
+    );
+
+    -- Remove the middle node.
+    if middle != null then {
+        list.drop(middle);
+    };
+
+    -- Ensure that it is no longer there
+    -- and that the correct node was removed.
+    success = success and (
+        match list.top with
+            Just first => (
+                (match first.next with
+                    Just second => (
+                        (match second.next with
+                            Nothing => true
+                            _       => false) and
+                        second.value == 42
+                    )
+                    _ => false) and
+                first.value == 420
+            )
+            _ => false
+    );
+
+    -- Return
+    success
 }
 def length_1() : bool {
     let

@@ -116,12 +116,12 @@ def trie_add_1() : bool {
 }
 
 def trie_contains_1() : bool {
-    let trie = new Trie();
+    val trie = new Trie();
 
-    let tjosan = "tjosan";
-    let foobar = "foobar";
-    let foorab = "foorab";
-    let longword = "averyveryverylongword";
+    val tjosan = "tjosan";
+    val foobar = "foobar";
+    val foorab = "foorab";
+    val longword = "averyveryverylongword";
 
     trie.add(tjosan);
     trie.add(foobar);
@@ -149,7 +149,7 @@ def trie_contains_1() : bool {
 }
 
 def trie_prefix_1() : bool {
-    let trie = new Trie();
+    val trie = new Trie();
     trie.add("foobar");
 
     if not trie.is_prefix("foo") then {
@@ -167,11 +167,11 @@ def trie_prefix_1() : bool {
 }
 
 def trie_suffix_1() : bool {
-    let trie = new Trie();
+    val trie = new Trie();
     trie.add("foobar");
     trie.add("foorab");
 
-    let suffixes = trie.get_suffixes("foo");
+    val suffixes = trie.get_suffixes("foo");
 
     match suffixes with
         Just arr => {

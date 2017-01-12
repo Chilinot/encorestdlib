@@ -209,7 +209,7 @@ def bst_add_subtree_1() : bool {
         tree_2.add(6,6, int_compare);
         tree_2.add(8,8, int_compare);
 
-        let root_1 = (match tree_1.root with Just root => root);
+        val root_1 = (match tree_1.root with Just root => root);
 
         tree_1.add_subtree(root_1, tree_2.root, int_compare);
 
@@ -298,7 +298,7 @@ def bst_pop_leftmost_1() : bool {
         bst.add(6,6, int_compare);
         bst.add(8,8, int_compare);
 
-        let min = bst.pop_leftmost(bst.root);
+        val min = bst.pop_leftmost(bst.root);
 
         (match min with
             (Just (k,v), false) when k == 2 and v == 2 => true
@@ -382,8 +382,8 @@ def bst_pop_leftmost_2() : bool {
         bst.add(6,6, int_compare);
         bst.add(8,8, int_compare);
 
-        let min1 = bst.pop_leftmost(bst.root);
-        let min2 = bst.pop_leftmost(bst.root);
+        val min1 = bst.pop_leftmost(bst.root);
+        val min2 = bst.pop_leftmost(bst.root);
 
         (match min1 with
             (Just (2,2), false) => true

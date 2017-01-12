@@ -72,27 +72,25 @@ module EUnit
         }
 
         def run() : void {
-            let
-                finished = 0
-            in {
-                println("\nEUnit testsuite \"{}\" running {} test(s)...", this.suite_name, this.counter);
+            println("\nEUnit testsuite \"{}\" running {} test(s)...", this.suite_name, this.counter);
 
-                (repeat i <- this.counter {
-                    let
-                        test  = this.test_cases[i] : TestCase
-                        value = test.perform()     : bool
-                    in {
-                        if value != test.expected then {
-                            println("\tFailure!");
-                        } else {
-                            println("\tSuccess!");
-                            finished = finished + 1;
-                        };
-                    }
-                });
+            var finished = 0;
 
-                println("\nEUnit testsuite \"{}\" completed.", this.suite_name);
-                println("{}/{} tests completed successfully!", finished, this.counter);
-            }
+            (repeat i <- this.counter {
+                let
+                    test  = this.test_cases[i] : TestCase
+                    value = test.perform()     : bool
+                in {
+                    if value != test.expected then {
+                        println("\tFailure!");
+                    } else {
+                        println("\tSuccess!");
+                        finished = finished + 1;
+                    };
+                }
+            });
+
+            println("\nEUnit testsuite \"{}\" completed.", this.suite_name);
+            println("{}/{} tests completed successfully!", finished, this.counter);
         }
     }

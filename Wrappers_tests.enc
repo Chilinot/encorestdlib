@@ -3,7 +3,7 @@ module Wrappers_tests
 import Wrappers
 
 def int_1() : bool {
-    let i = new Int(12);
+    val i = new Int(12);
 
     (match i.get_value() with
         12 => true
@@ -21,7 +21,7 @@ def int_1() : bool {
 }
 
 def char_1() : bool {
-    let c = new Char('a');
+    val c = new Char('a');
 
     (match c.get_value() with
         'a' => true

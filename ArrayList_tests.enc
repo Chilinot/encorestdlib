@@ -4,7 +4,7 @@ import ArrayList
 import Data.Either
 
 def arrlist_basic_1() : bool {
-    let list = new ArrayList<int>();
+    val list = new ArrayList<int>();
     list.insert(12);
     list.insert(13);
     list.insert(42);
