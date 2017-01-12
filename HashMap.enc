@@ -4,8 +4,6 @@ import LinkedList
 import Siphash
 import Hasher
 import HashCode
-import Map
-import Iterator
 
 {-
     Wrapper around key-value pairs for maps.
@@ -19,7 +17,7 @@ passive class Entry<v>
         this.value = value;
     }
 
-passive class HashMapIterator<v> : Iterator<Entry<v>>
+passive class HashMapIterator<v>
     {-
         TODO: Add clone of internal representation of hashmap.
         This will stop aliasing problems as well as allowing this object
@@ -103,7 +101,7 @@ passive class HashMapIterator<v> : Iterator<Entry<v>>
         this.current_node != Nothing
     }
 
-passive class HashMap<v> : Map<v>
+passive class HashMap<v>
     size   : uint
     items  : uint
     map    : [LinkedList<Entry<v>>]
