@@ -1,5 +1,8 @@
 module LinkedList
 
+import Collection
+import Iterable
+
 passive class LinkedNode<t> {
     value : t
     prev  : Maybe LinkedNode<t>
@@ -15,30 +18,154 @@ passive class LinkedNode<t> {
     }
 }
 
-passive class LinkedList<t> {
-    top : Maybe LinkedNode<t>
+passive class LinkedList<t> : Collection<t>(first, last, length) {
+    first  : Maybe LinkedNode<t>
+    last   : Maybe LinkedNode<t>
     length : int
 
     def init() : void {
-        this.top = Nothing : Maybe LinkedNode<t>;
+        this.first = Nothing : Maybe LinkedNode<t>;
+        this.last  = Nothing : Maybe LinkedNode<t>;
         this.length = 0;
     }
 
-    def iterator() : LinkedIterator<t> {
-        new LinkedIterator<t>(this)
+    def append(value: t) : void {
+      val new_node = Just new LinkedNode<t>(value, this.last, Nothing);
+
+      if this.last != Nothing then {
+        match this.last with
+          Just node => node.next = new_node;
+      };
+
+      if this.first == Nothing then {
+        this.first = new_node;
+      };
+
+      this.last = new_node;
+      this.length = this.length + 1;
     }
 
-    def push(value : t) : void {
-        let
-            new_node = Just new LinkedNode<t>(value, Nothing, this.top)
-        in {
-            if this.top != Nothing then {
-                match this.top with
-                    Just node => node.prev = new_node;
-            };
-            this.top = new_node;
-            this.length = this.length + 1;
+    def append_all(value:[t]) : void {
+      for v in value
+        this.append(v);
+    }
+
+    def contains(value:t) : bool {
+      var retval = false;
+
+      var cursor = this.first;
+      while cursor != Nothing {
+        var current = match cursor with Just n => n; -- HACK
+        if current.value == value then {
+          retval = true;
+          embed void break; end; -- HACK!
         }
+        else {
+          cursor = current.next;
+        }
+      };
+
+      -- Return
+      retval
+    }
+
+    def element_at(index:int) : Maybe t {
+      var location = 0 : uint;
+      var retval = Nothing : Maybe t;
+
+      var cursor = this.first;
+      while cursor != Nothing and location <= index {
+        val current = match cursor with Just n => n;
+        if location == index then {
+          retval = Just current.value;
+
+          -- Stop iteration
+          cursor = Nothing;
+        }
+        else {
+          cursor = current.next;
+          location = location + 1;
+        }
+      };
+
+      -- Return
+      retval
+    }
+
+    def insert(value: t, index: int) : void {
+      println("LinkedList::insert() not implemented!");
+    }
+
+    -- TODO: Optimize!
+    def nth(index: int) : t {
+      match this.element_at(index) with Just v => v
+    }
+
+    def prepend(value : t) : void {
+        val new_node = Just new LinkedNode<t>(value, Nothing, this.first);
+
+        if this.first != Nothing then {
+            match this.first with
+                Just node => node.prev = new_node;
+        };
+
+        if this.last == Nothing then {
+          this.last = new_node;
+        };
+
+        this.first = new_node;
+        this.length = this.length + 1;
+    }
+
+    def prepend_all(value: [t]) : void {
+      for v in value
+        this.prepend(v);
+    }
+
+    def remove(index:int) : Maybe t {
+      println("LinkedList::remove() not implemented!");
+      Nothing
+    }
+
+    def remove_all(value : t) : void {
+        let
+            remove = new LinkedList<LinkedNode<t>>()
+            iter = this.iterator()
+        in {
+            -- Locate all occurances of 'value' for removal in next step.
+            (while iter.has_next() {
+                let current = iter.next() in {
+                    match current with
+                        Just node => {
+                            if node.value == value then {
+                                -- Store current node for removal
+                                remove.prepend(node);
+                            }
+                        }
+                }
+            });
+
+            -- Remove all nodes located in previous iteration.
+            let rem_iter = remove.iterator() in {
+                while rem_iter.has_next() {
+                    let current = rem_iter.next() in {
+                        match current with
+                            -- Node.value == LinkedNode<t> that is marked for removal
+                            Just node => this.drop(node.value);
+                    }
+                }
+            }
+        }
+    }
+
+    def remove_back() : Maybe t {
+      println("LinkedList::remove_back() not implemented!");
+      Nothing
+    }
+
+    def remove_front() : Maybe t {
+      println("LinkedList::remove_front() not implemented!");
+      Nothing
     }
 
     def drop(node : LinkedNode<t>) : void {
@@ -59,8 +186,8 @@ passive class LinkedList<t> {
 
             -- Repoint top if the node
             -- to remove is the top-node.
-            (match this.top with
-                Just n => if n == node then this.top = next
+            (match this.first with
+                Just n => if n == node then this.first = next
                 Nothing => ());
 
             -- TODO: Check if the given
@@ -70,35 +197,13 @@ passive class LinkedList<t> {
         }
     }
 
-    def remove_all(value : t) : void {
-        let
-            remove = new LinkedList<LinkedNode<t>>()
-            iter = this.iterator()
-        in {
-            -- Locate all occurances of 'value' for removal in next step.
-            (while iter.has_next() {
-                let current = iter.next() in {
-                    match current with
-                        Just node => {
-                            if node.value == value then {
-                                -- Store current node for removal
-                                remove.push(node);
-                            }
-                        }
-                }
-            });
+    def size() : int {
+      println("LinkedList::size() not implemented!");
+      0
+    }
 
-            -- Remove all nodes located in previous iteration.
-            let rem_iter = remove.iterator() in {
-                while rem_iter.has_next() {
-                    let current = rem_iter.next() in {
-                        match current with
-                            -- Node.value == LinkedNode<t> that is marked for removal
-                            Just node => this.drop(node.value);
-                    }
-                }
-            }
-        }
+    def iterator() : LinkedIterator<t> {
+        new LinkedIterator<t>(this)
     }
 }
 
@@ -108,23 +213,17 @@ passive class LinkedIterator<t> {
 
     def init(list : LinkedList<t>) : void {
         this.list = list;
-        this.cursor = list.top;
+        this.cursor = list.first;
     }
 
     def next() : Maybe LinkedNode<t> {
-        let
-            current = this.cursor
-        in {
-            if current == Nothing then {
-                Nothing
-            } else {
-                (match this.cursor with
-                    Just node => this.cursor = node.next);
-
-                -- Return
+        val current = this.cursor;
+        match current with
+            Nothing => Nothing
+            Just n  => {
+                this.cursor = n.next;
                 current
             }
-        }
     }
 
     def has_next() : bool {

@@ -10,16 +10,26 @@ class Main {
     def main() : void {
         let tests = new TestSuite("LinkedList", 100) in {
             tests.assert_true("init", create);
-            tests.assert_true("push one int", push_one);
-            tests.assert_true("push two ints", push_two);
-            tests.assert_true("push three ints", push_three);
-            tests.assert_true("push three ints and remove middle", push_three_and_remove_middle);
+            tests.assert_true("prepend one int", prepend_one);
+            tests.assert_true("prepend two ints", prepend_two);
+            tests.assert_true("prepend three ints", prepend_three);
+            tests.assert_true("prepend three ints and remove middle", prepend_three_and_remove_middle);
             tests.assert_true("length #1", length_1);
             tests.assert_true("length #2", length_2);
             tests.assert_true("remove_all #1", remove_all_1);
+            tests.assert_true("append one int", append_one);
+            tests.assert_true("append two ints", append_two);
+            tests.assert_true("append three ints", append_three);
+            tests.assert_true("append all", append_all);
+            tests.assert_true("element_at #1", element_at_one);
+            tests.assert_true("contains #1", contains_one);
+            tests.assert_true("contains #2", contains_two);
+            tests.assert_true("contains #3", contains_three);
+            tests.assert_true("prepend_all #1", prepend_all_one);
 
             tests.run();
         };
+        {-
         let tests = new TestSuite("HashMap", 100) in {
             tests.assert_true("set and get", set_and_get);
             tests.assert_true("items and size #1", items_and_size_1);
@@ -78,6 +88,6 @@ class Main {
 
             tests.run();
         };
-        ();
+        -}
     }
 }
