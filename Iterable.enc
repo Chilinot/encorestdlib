@@ -1,0 +1,51 @@
+module Iterable
+
+-- Incomplete definition
+trait Collection<t>
+  require append(value:t) : void
+  require append_all(values:[t]) : void
+  require contains(value:t) : bool 
+  require element_at(index:int) : Maybe t
+  require insert(value:t, index:int) : void 
+  require nth(index:int) : t
+  require prepend(value:t) : void 
+  require prepend_all(value:[t]) : void
+  require remove(index:int) : Maybe t 
+  require remove_back() : Maybe t
+  require remove_front() : Maybe t
+  require size() : int
+
+trait Iterable<t> 
+  require nth(n:int) : t
+  require size() : int
+  require private_new_collection(size_hint:int) : Collection<t>
+
+  def map_do(f:t -> void) : void 
+    repeat i <- this.size() 
+      f(this.nth(i)) 
+
+  def map(f:t -> t) : Collection<t> {
+    val result = this.private_new_collection(0) ;
+    repeat i <- this.size() 
+      result.append(f(this.nth(i))) ;
+    result
+  }
+
+  def filter(f:t -> bool) : Collection<t> {
+    val result = this.private_new_collection(0) ;
+    repeat i <- this.size() 
+      let e = this.nth(i) in
+        if f(e) then
+          result.append(e) ;
+    result
+  }
+
+  def flat_map(f:t -> Iterable<t>) : Collection<t> {
+    val result = this.private_new_collection(0) ;
+    repeat i <- this.size() {
+      let es = f(this.nth(i)) in
+        es.map_do(\(x:t) -> { result.append(x) }) 
+    } ; 
+    result
+  }
+  
