@@ -1,0 +1,142 @@
+import EUnit
+
+import LinkedList_tests
+import HashMap_tests
+import ArrayList_tests
+--import BST_tests
+--import Trie_tests
+--import Wrappers_tests
+
+class Main
+  def main() : unit
+    let
+      tests = new TestSuite("LinkedList", 100)
+    in
+      tests.assert_true("init", LinkedList_tests.create)
+      tests.assert_true("prepend one int", LinkedList_tests.prepend_one)
+      tests.assert_true("prepend two ints", LinkedList_tests.prepend_two)
+      tests.assert_true("prepend three ints", LinkedList_tests.prepend_three)
+      tests.assert_true("prepend three ints and remove middle", LinkedList_tests.prepend_three_and_remove_middle)
+      tests.assert_true("length #1", LinkedList_tests.length_1)
+      tests.assert_true("length #2", LinkedList_tests.length_2)
+      tests.assert_true("remove_all #1", LinkedList_tests.remove_all_1)
+      tests.assert_true("append one int", LinkedList_tests.append_one)
+      tests.assert_true("append two ints", LinkedList_tests.append_two)
+      tests.assert_true("append three ints", LinkedList_tests.append_three)
+      tests.assert_true("append all", LinkedList_tests.append_all)
+      tests.assert_true("element_at #1", LinkedList_tests.list_element_at_one)
+      tests.assert_true("element_at #2", LinkedList_tests.list_element_at_two)
+      tests.assert_true("contains #1", LinkedList_tests.contains_one)
+      tests.assert_true("contains #2", LinkedList_tests.contains_two)
+      tests.assert_true("contains #3", LinkedList_tests.contains_three)
+      tests.assert_true("prepend_all #1", LinkedList_tests.prepend_all_one)
+      tests.assert_true("insert #1", LinkedList_tests.list_insert_one)
+      tests.assert_true("insert #2", LinkedList_tests.list_insert_two)
+      tests.assert_true("clone #1", LinkedList_tests.list_clone_one)
+      tests.assert_true("drop #1", LinkedList_tests.list_drop_one)
+      tests.assert_true("remove front #1", LinkedList_tests.list_remove_front_one)
+      tests.assert_true("remove back #1", LinkedList_tests.list_remove_back_one)
+      tests.assert_true("iter #1", LinkedList_tests.list_iter_one)
+      tests.run()
+    end
+
+    let
+      tests = new TestSuite("HashMap", 100)
+    in
+      tests.assert_true("set and get", HashMap_tests.set_and_get)
+      tests.assert_true("items and size #1", HashMap_tests.items_and_size_1)
+      tests.assert_true("items and size #2", HashMap_tests.items_and_size_2)
+      tests.assert_true("remove #1", HashMap_tests.remove_1)
+      tests.assert_true("remove #2", HashMap_tests.remove_2)
+      tests.assert_false("dual remove", HashMap_tests.dual_remove)
+      tests.assert_int("items #1", HashMap_tests.items_1, 1)
+      tests.assert_int("items #2", HashMap_tests.items_2, 2)
+      tests.assert_int("items #3", HashMap_tests.items_3, 2)
+      tests.assert_int("items #4", HashMap_tests.items_4, 9)
+      tests.assert_int("size #1", HashMap_tests.size_1, 32)
+      tests.assert_true("iterator #1", HashMap_tests.iterator_test_1)
+      tests.assert_true("iterator #2", HashMap_tests.iterator_test_2)
+      tests.assert_true("resize #1", HashMap_tests.resize_1)
+      tests.assert_true("foreach #1", HashMap_tests.foreach_one)
+      tests.assert_true("map #1", HashMap_tests.map_one)
+      tests.assert_true("clone #1", HashMap_tests.clone_one)
+
+
+      tests.run()
+    end
+
+    let
+      tests = new TestSuite("ArrayList", 100)
+    in
+      --tests.assert_true("Basic #1", arrlist_basic_1)
+      tests.assert_true("prepend #1", ArrayList_tests.prepend_one)
+      tests.assert_true("prepend #2", ArrayList_tests.prepend_two)
+      tests.assert_true("prepend_all #1", ArrayList_tests.prepend_all_one)
+      tests.assert_true("append #1", ArrayList_tests.append_one)
+      tests.assert_true("append #2", ArrayList_tests.append_two)
+      tests.assert_true("insert #1", ArrayList_tests.insert_one)
+      tests.assert_true("insert #2", ArrayList_tests.insert_two)
+      tests.assert_true("insert #3", ArrayList_tests.insert_three)
+      tests.assert_true("insert #4 failure", ArrayList_tests.insert_four_failure)
+      tests.assert_true("contains #1", ArrayList_tests.contains_one)
+      tests.assert_true("contains #2", ArrayList_tests.contains_two)
+      tests.assert_true("element_at #1", ArrayList_tests.element_at_one)
+      tests.assert_true("element_at #2", ArrayList_tests.element_at_two)
+      tests.assert_true("nth #1", ArrayList_tests.nth_one)
+      tests.assert_true("nth #2", ArrayList_tests.nth_two)
+      tests.assert_true("remove #1", ArrayList_tests.remove_one)
+      tests.assert_true("remove #2", ArrayList_tests.remove_two)
+      tests.assert_true("remove #3", ArrayList_tests.remove_three)
+      tests.assert_true("remove_front #1", ArrayList_tests.remove_front_one)
+      tests.assert_true("remove_back #1", ArrayList_tests.remove_back_one)
+      tests.assert_true("shift right #1", ArrayList_tests.shift_right_one)
+      tests.assert_true("shift left #1", ArrayList_tests.shift_left_one)
+      tests.assert_true("shift left #2", ArrayList_tests.shift_left_two)
+      tests.assert_true("shift left #3", ArrayList_tests.shift_left_three)
+      tests.assert_true("ensure can accomodate #1", ArrayList_tests.ensure_can_accomodate_one)
+      tests.assert_true("ensure can accomodate #2", ArrayList_tests.ensure_can_accomodate_two)
+
+      tests.run()
+    end
+
+    {-
+    let
+      tests = new TestSuite("BST", 100)
+    in
+      tests.assert_true("Add", bst_test_add)
+      tests.assert_true("Add advanced", bst_test_add_adv)
+      tests.assert_true("Add Subtree #1", bst_add_subtree_1)
+      tests.assert_true("Pop leftmost #1", bst_pop_leftmost_1)
+      tests.assert_true("Pop leftmost #2", bst_pop_leftmost_2)
+      tests.assert_true("Remove #1", bst_remove_1)
+      tests.assert_true("Remove #2", bst_remove_2)
+      tests.assert_true("Remove root", bst_remove_root)
+      tests.assert_true("Remove leaf #1", bst_remove_leaf_1)
+      tests.assert_true("Remove leaf #2", bst_remove_leaf_2)
+      tests.assert_true("Get_value #1", bst_get_value_1)
+
+      tests.run()
+    end
+    let
+      tests = new TestSuite("Wrappers", 100)
+    in
+      tests.assert_true("Integer #1", int_1)
+      tests.assert_true("Character #1", char_1)
+
+      tests.run()
+    end
+    let
+      tests = new TestSuite("Trie", 100)
+    in
+      tests.assert_true("Basic #1", trie_basic_1)
+      tests.assert_true("Add #1", trie_add_1)
+      tests.assert_true("Contains #1", trie_contains_1)
+      tests.assert_true("Prefix #1", trie_prefix_1)
+      tests.assert_true("Get_Suffixes #1", trie_suffix_1)
+
+      tests.run()
+    end
+    -}
+  end
+end
+

@@ -1,0 +1,46 @@
+-- This file was automatically converted by encorec
+
+module Array
+fun contains[t](arr : [t], to_find : t) : bool
+  var retval = false
+  for x <- arr do
+    if x == to_find then
+      retval = true
+      EMBED (unit)
+        break;
+      END
+    end
+  end
+  retval
+end
+fun contains_str(arr : [String], to_find : String) : bool
+  var retval = false
+  for x <- arr do
+    if x.compare(to_find) == 0 then
+      retval = true
+      EMBED (unit)
+        break;
+      END
+    end
+  end
+  retval
+end
+fun clone[t](src : [t]) : [t]
+  var new_arr = new [t](|src|)
+  repeat i <- |src| do
+    new_arr(i) = src(i)
+  end
+  new_arr
+end
+fun nclone[t](src : [t], n : uint) : Maybe[[t]]
+  if n > |src| then
+    Nothing
+  else
+    var new_arr = new [t](n)
+    repeat i <- n do
+      new_arr(i) = src(i)
+    end
+    Just(new_arr)
+  end
+end
+
